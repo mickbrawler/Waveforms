@@ -1,40 +1,64 @@
 import numpy as np
 import pylab as pl
 
-def get_time_series(f, A, t, gamma, t0, tend):
+def waveform(f,A,t,t0,tend,gamma,phi0):
     
-    if t0 > t:                                           #Check if t0/tend are greater than t
-        return "Invalid signal start indice"
-    elif tend > t:
-        return "Invalid signal end indice"
+    if tend > t: # conditional for noise duration
+        t = tend + 2
+
+    # Method of finding dt
+    i = 100 # Extent of n's tried to get dt
+
+    n = np.arange(1,i+1)
+
+    dt = (tend - t0)/ n
+
+    n, dt = np.meshgrid(n, dt) # creates matrix of n (x axis), dt (y axis)
+
+    multipledt = dt * n # multiply the two matrices returns dt multiplyed by 1 to i (i being how far you want to go to see if dt reaches t0 from 0)
+
+    correctdt = dt[multipledt == t0] # make values in multipledt that are t0 True, return value at position of the Trues
+
+    useddt = min(correctdt)
     
-    phi0 = np.pi/6  
+    # Obtain number of values from 0 to t0 to tend to 
+    paddingL = (t0-0)/useddt # How many elements between 0 and t0
+    
+    signal = (tend - t0)/useddt # How many elements between t0 and tend
+    
+    paddingR = (t-tend)/useddt
+
+    totlen = paddingL + signal + paddingR # number upto which dt will be multiplied by to get time stamps
+
+    T = useddt * np.arange(totlen+1) # timestamps!
+    
+    # Must make Y have 0s for values outside t0 to tend.
+    # This way d and Y graph are correct
+    # Create boolean version of T array where Falses are the padding
+    # Place on top of Y, makes Falses 0s
+
+    
+    BoolT = (T>t0) & (T<tend)
+    BoolT = BoolT.astype(int)
+    
+    #Endgame
     w = 2*np.pi*f
     
-    # Signal time series
-    T = np.linspace(t0,tend, int(((tend-t0)/t)*10000))   # Array from t0 to tend,spaced out a fraction of the # of times t is
-    # T is a numpy array that starts at t0 and ends at tend, with linearly spaced times 
-
     Y = A*np.sin(w*T + phi0)*np.exp(-gamma*T)
-    # Y is the a sinusoidal displacement that lasts for the entire duration of time (t0, tend)
-
-    # Carrier time series
-    t = np.linspace(0, t, 10000)
-    # t is a numpy array that starts at 0 and ends at t.
-
-    y = A*np.sin(w*t + phi0)*np.exp(-gamma*t)
-    # y is the displacement during this time duration t
+    Y = Y * BoolT
     
-    # Plotting
+    np.random.seed(seed = 1)
+    y = np.random.random(len(Y))
+    
+    d = Y + y # Complete Data
+    
+    # Graphing (Why not)
     pl.rcParams.update({'font.size': 18})
     pl.figure(figsize=(12,10))
     
-    pl.plot(t, y, linewidth=2)
-    pl.plot(T, Y, linewidth=2)                           # Plot of "signal" overlaps carrier wave
+    pl.plot(T, y, color = 'green', linewidth=2) # Noise
+    pl.plot(T, d, color = 'black', linewidth=2) # Combined
+    pl.plot(T, Y, color = 'orange', linewidth=2) # Signal
+    pl.savefig('waveform.png')
     
-    pl.plot(t, A*np.exp(-gamma*t), 'k--', linewidth=2)
-    pl.plot(t, -A*np.exp(-gamma*t), 'k--', linewidth=2)
-    pl.xlabel('Time (s)')
-    pl.ylabel('$\\sin(\\omega t)$')
-    
-    return [T,Y]
+waveform(1,1,10,2,5,0,0)
