@@ -60,5 +60,7 @@ def waveform(f,A,t,t0,tend,gamma,phi0):
     pl.plot(T, d, color = 'black', linewidth=2) # Combined
     pl.plot(T, Y, color = 'orange', linewidth=2) # Signal
     pl.savefig('waveform.png')
+
+    return (T,d)
     
 waveform(1,1,10,2,5,0,0)
