@@ -7,7 +7,7 @@ def waveform(f,A,t,t0,tend,gamma,phi0):
         t = tend + 2
 
     # Method of finding dt
-    i = 100 # Extent of n's tried to get dt
+    i = 50 # Extent of n's tried to get dt
 
     n = np.arange(1,i+1)
 
@@ -15,12 +15,12 @@ def waveform(f,A,t,t0,tend,gamma,phi0):
 
     n, dt = np.meshgrid(n, dt) # creates matrix of n (x axis), dt (y axis)
 
-    multipledt = dt * n # multiply the two matrices returns dt multiplyed by 1 to i (i being how far you want to go to see if dt reaches t0 from 0)
+    tcandidates = dt * n # multiply the two matrices returns dt multiplyed by 1 to i (i being how far you want to go to see if dt reaches t0 from 0)
 
-    correctdt = dt[multipledt == t0] # make values in multipledt that are t0 True, return value at position of the Trues
+    correctdt = dt[tcandidates == t0] # make values in tcandidates that are t0 True, return value at position of the Trues
 
     useddt = min(correctdt)
-    
+     
     # Obtain number of values from 0 to t0 to tend to 
     paddingL = (t0-0)/useddt # How many elements between 0 and t0
     
@@ -60,7 +60,7 @@ def waveform(f,A,t,t0,tend,gamma,phi0):
     pl.plot(T, d, color = 'black', linewidth=2) # Combined
     pl.plot(T, Y, color = 'orange', linewidth=2) # Signal
     pl.savefig('waveform.png')
-
-    return (T,d)
     
-waveform(1,1,10,2,5,0,0)
+    return (T,d)
+# f,A,t,t0,tend,gamma,phi0
+waveform(.25,1,5,2,3,0,0)
