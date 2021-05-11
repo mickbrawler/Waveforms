@@ -1,66 +1,54 @@
 import numpy as np
 import pylab as pl
 
-def waveform(f,A,t,t0,tend,gamma,phi0):
+def waveform(f,A,b,t0,tend,t,gamma,phi0,n = 1000):
     
-    if tend > t: # conditional for noise duration
+    # Conditional for noise duration
+    if tend > t: 
         t = tend + 2
 
-    # Method of finding dt
-    i = 50 # Extent of n's tried to get dt
+    # Method of finding dt (Generally it uses the next best n if it doesn't work)
+    n = np.arange(1,n+1) # 1 to given stepcount will be used to find stepcount that works best
 
-    n = np.arange(1,i+1)
+    dt = (tend - t0)/n # dt is now the dt's from t0 to tend from the stepcounts from 1 to given
 
-    dt = (tend - t0)/ n
+    n, dt = np.meshgrid(n, dt) # Creates matrixes of n (x axis), dt (y axis)
 
-    n, dt = np.meshgrid(n, dt) # creates matrix of n (x axis), dt (y axis)
+    tcandidates = dt * n # Find all potential times for each dt
 
-    tcandidates = dt * n # multiply the two matrices returns dt multiplyed by 1 to i (i being how far you want to go to see if dt reaches t0 from 0)
-
-    correctdt = dt[tcandidates == t0] # make values in tcandidates that are t0 True, return value at position of the Trues
-
-    useddt = min(correctdt)
-     
-    # Obtain number of values from 0 to t0 to tend to 
-    paddingL = (t0-0)/useddt # How many elements between 0 and t0
+    correctdt = min(dt[(tcandidates == t0) | (tcandidates == (tend-t0))]) # Match potential times with t0 and (t-tend)
+         
+    # Obtain n value for all three intervals: 0_t0, t0_tend, tend_t
+    leftn = (t0-0)/correctdt 
+    signaln = (tend - t0)/correctdt 
+    rightn = (t-tend)/correctdt
     
-    signal = (tend - t0)/useddt # How many elements between t0 and tend
-    
-    paddingR = (t-tend)/useddt
+    totlen = leftn + signaln + rightn # Number upto which dt will be multiplied by to get time stamps
 
-    totlen = paddingL + signal + paddingR # number upto which dt will be multiplied by to get time stamps
-
-    T = useddt * np.arange(totlen+1) # timestamps!
-    
-    # Must make Y have 0s for values outside t0 to tend.
-    # This way d and Y graph are correct
-    # Create boolean version of T array where Falses are the padding
-    # Place on top of Y, makes Falses 0s
-
-    
-    BoolT = (T>t0) & (T<tend)
-    BoolT = BoolT.astype(int)
-    
+    T = correctdt * np.arange(totlen+1) # Timestamps!
+ 
     #Endgame
     w = 2*np.pi*f
     
+    BoolT = (T>t0) & (T<tend)    # Create boolean version of T array where Falses are the padding
+    BoolT = BoolT.astype(int)
     Y = A*np.sin(w*T + phi0)*np.exp(-gamma*T)
-    Y = Y * BoolT
+    Y = Y * BoolT    # Isolate signal data, make the rest 0s
     
     np.random.seed(seed = 1)
-    y = np.random.random(len(Y))
+    y = b * np.random.uniform(-1,1,len(Y)) # Noise!
     
-    d = Y + y # Complete Data
+    d = Y + y # Complete Data!
     
-    # Graphing (Why not)
+    # Graphing
     pl.rcParams.update({'font.size': 18})
     pl.figure(figsize=(12,10))
-    
     pl.plot(T, y, color = 'green', linewidth=2) # Noise
     pl.plot(T, d, color = 'black', linewidth=2) # Combined
     pl.plot(T, Y, color = 'orange', linewidth=2) # Signal
     pl.savefig('waveform.png')
-    
-    return (T,d)
-# f,A,t,t0,tend,gamma,phi0
-waveform(.25,1,5,2,3,0,0)
+        
+    return (T)
+
+# f,A,b,t0,tend,t,gamma,phi0
+waveform(1,1,1,1,3,5,0,0)
