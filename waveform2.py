@@ -46,7 +46,22 @@ def waveform(f,A,b,t0,tend,d_end_t,gamma,phi0,N=1000):
     pl.plot(T_full, y_full, color = 'orange', linewidth=2)  # Signal
     pl.savefig('waveform.png')
     
-    return(T_full)
+    return(dt,T_full,d)
 
 # f,A,b,t0,tend,d_end_t,gamma,phi0
-waveform(1,1,1,1,3,5,0,0)
+
+def template(f,gamma,t0,tend):
+    
+    dt = waveform(1,1,1,1,3,5,0,0)[0]
+    t = np.arange(t0,tend,dt)
+    w = 2 * np.pi * f  
+    y = np.sin(w*t)*np.exp(-gamma*t0)
+    
+    pl.rcParams.update({'font.size': 18})
+    pl.figure(figsize=(12,10))
+    pl.plot(t, y, color = 'green', linewidth=2)
+    
+    return(t,y)
+
+# f,gamma, t0, tend                             
+template(1,0,1,3)
