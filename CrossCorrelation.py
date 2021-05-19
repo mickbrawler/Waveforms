@@ -66,15 +66,15 @@ def template(f,gamma,t0,tend):
 # f,gamma, t0, tend
 template(1,0,2,3)
 
-def match(TT,tt): # TT noise/signal time series, t template timeseries
+def match():
     
-    tt_in_TT = (TT>=tzero) & (TT<=tEnd) #t values in TT are made TRUE, it is same size as d
+    t_in_T = (T_full>=tzero) & (T_full<=tEnd) #t values in T_full are made TRUE (Remember T_full is same size as d)
     
-    usedY = d[tt_in_TT] # Use boolean masking on d, now d values associated with values of template times are used
-    M = np.sum(usedY * y) #Multiply result with template's, Add em
+    usedY = d[t_in_T] # Use boolean masking on d, now d values associated with values of template times are used
+
+    M = np.sum(usedY * y) #Multiply result with template's y, Add em
     
     return(M)
-    
-match(T_full, t)
 
+match()
 # Sliding functionality could involve adding usedY by dt in each loop when starting from 0
