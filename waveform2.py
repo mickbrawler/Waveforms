@@ -38,9 +38,13 @@ def waveform(f, A, b, t0, tend, d_end_t=None, gamma=0.0,
     assert t0 > 0, "Signal should start later than t=0"
     if (d_end_t is None) or (tend > d_end_t - 10):
         d_end_t = tend + 10
+        if verbose:
+            print("data end time is set at {}".format(d_end_t))
     
     T = np.linspace(t0, tend, N) # Time stamps of signal
     dt = np.mean(np.diff(T)) # figuring out the resolution of the series
+    if verbose:
+        print("Mean value of timing resolution = {}".format(dt))
     
     t = t0 # Initializing the time series at the start time
     t_minus = [] # To populate time stamps prior to the signal start
@@ -56,18 +60,29 @@ def waveform(f, A, b, t0, tend, d_end_t=None, gamma=0.0,
     T_full = np.hstack((t_minus, T, t_plus))  # Connect time stamps
     
     dev = np.std(np.diff(T_full))  # Standard deviation in dt's of T_full
-    
+    if verbose:
+        print("Standard deviation of the resolution of time = {}".format(dev))
+
+    if verbose:
+        print("Creating time series of the signal...")
     w = 2 * np.pi * f  
     y = A*np.sin(w*T + phi0)*np.exp(-gamma*(T-t0))
+
     
     # Padding of signal data
+    if verbose:
+        print("Creating the zero-padded signal...")
     y_minus = np.zeros_like(t_minus)
     y_plus = np.zeros_like(t_plus)
     y_full = np.hstack((y_minus, y, y_plus))
     
+    if verbose:
+        print("Creating random noise...")
     np.random.seed(seed = 1)
     noise = -b+2*b*np.random.random(len(T_full))  # Noise!
     
+    if verbose:
+        print("Creating final data")
     d = noise + y_full  # Complete Data!
     
     # Graphing   
