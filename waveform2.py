@@ -1,8 +1,9 @@
+import json
 import numpy as np
 import pylab as pl
 
 def waveform(f, A, b, t0, tend, d_end_t=None, gamma=0.0,
-             phi0=0.0, N=1000, verbose=False):
+             phi0=0.0, N=1000, verbose=False, outputfile=None):
     """
     METHOD
     ======
@@ -96,7 +97,13 @@ def waveform(f, A, b, t0, tend, d_end_t=None, gamma=0.0,
     text = "f={}; A={}; b={}; t0={}; tend={}; gamma={}; N={}"
     pl.title(text.format(f, A, b, t0, tend, gamma, N))
     pl.savefig('waveform.png')
-    
+    T_full = list(T_full)
+    d = list(d)
+    data = {"dt" : dt, "t_full" : T_full, "d" : d}
+    if outputfile is None:
+        outputfile = "default_data.json"
+    with open(outputfile, "w") as f:
+        json.dump(data, f, indent=2, sort_keys=True)
     return(dt, T_full, d)
 
 # f,A,b,t0,tend,d_end_t,gamma,phi0
