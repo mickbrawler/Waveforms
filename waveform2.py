@@ -1,7 +1,25 @@
 import numpy as np
 import pylab as pl
 
-def waveform(f,A,b,t0,tend,d_end_t,gamma,phi0,N=1000):
+def waveform(f, A, b, t0, tend, d_end_t, gamma, phi0, N=1000):
+    """
+    METHOD
+    ======
+    Takes input parameters of a wave and the strength and duration of
+    noise, and returns the data.
+
+    PARAMETERS
+    ==========
+    f : Frequency of the signal
+    A : Amplitude of the signal
+    b : Amplitude of the noise
+    t0 : Timestamp of the beginning of the signal
+    tend : Time stamp of the end of the signal
+    d_end_t : ??
+    gamma : Attenuation factor of the signal
+    phi0 : Initial phase of the signal
+    N : Total number of time stamps
+    """
     
     # Conditional for noise duration
     if tend > d_end_t: 
