@@ -1,7 +1,8 @@
 import numpy as np
 import pylab as pl
 
-def waveform(f, A, b, t0, tend, d_end_t, gamma, phi0, N=1000):
+def waveform(f, A, b, t0, tend, d_end_t=None, gamma=0.0,
+             phi0=0.0, N=1000, verbose=False):
     """
     METHOD
     ======
@@ -10,36 +11,49 @@ def waveform(f, A, b, t0, tend, d_end_t, gamma, phi0, N=1000):
 
     PARAMETERS
     ==========
-    f : Frequency of the signal
-    A : Amplitude of the signal
-    b : Amplitude of the noise
-    t0 : Timestamp of the beginning of the signal
-    tend : Time stamp of the end of the signal
-    d_end_t : ??
-    gamma : Attenuation factor of the signal
-    phi0 : Initial phase of the signal
-    N : Total number of time stamps
+    f : (Float) Frequency of the signal
+    A : (Float) Amplitude of the signal
+    b : (Float) Amplitude of the noise
+    t0 : (Float) Timestamp of the beginning of the signal
+    tend : (Float) Time stamp of the end of the signal
+    d_end_t : (Float) Time stamp of the end time of the data. Default = None
+    gamma : (Float) Attenuation factor of the signal. Default = 0.0
+    phi0 : (Float) Initial phase of the signal. Default = 0.0
+    N : (Int) Total number of time stamps. Default = 1000
+    verbose: (Bool) Set True to get diagnostic stdout. Default = False
+
+    OUTPUT
+    ======
+    A tuple of a float and two numpy arrays (dt, T_full, d), where dt is 
+    the resolution of the time series. T_full is the full list of time stamps
+    of the data starting at 0 and ending and d_end_t, and d is the 
+    corresponding displacement values in the data.
+
     """
     
     # Conditional for noise duration
-    if tend > d_end_t: 
-        d_end_t = tend + 2
+    # If the data-end time is supplied to be too small:
+    if verbose:
+        print("Making sure that the stretch of data is longer than signal")
+    assert t0 > 0, "Signal should start later than t=0"
+    if (d_end_t is None) or (tend > d_end_t - 10):
+        d_end_t = tend + 10
     
-    T = np.linspace(t0,tend,N) # Time stamps of signal
-    dt = np.mean(np.diff(T))
+    T = np.linspace(t0, tend, N) # Time stamps of signal
+    dt = np.mean(np.diff(T)) # figuring out the resolution of the series
     
-    t = t0
-    t_minus = []
-    while t >= 0:
+    t = t0 # Initializing the time series at the start time
+    t_minus = [] # To populate time stamps prior to the signal start
+    while t >= 0: # Making sure that we reach all the way back to zero.
         t = t - dt
         t_minus.append(t)  # Create time spamps from (t0-dt) to 0
 
     t_minus = np.array(t_minus)[::-1]  # Reverse to be from 0 to t0
     t_minus = t_minus[t_minus >= 0]  # Eliminate numbers less than 0
     
-    t_plus = np.arange(tend+dt,d_end_t,dt)  # Time stamps from (tend+dt) to d_end_t, in dt's
+    t_plus = np.arange(tend+dt, d_end_t, dt)  # Time stamps from (tend+dt) to d_end_t, in dt's
     
-    T_full = np.hstack((t_minus,T,t_plus))  # Connect time stamps
+    T_full = np.hstack((t_minus, T, t_plus))  # Connect time stamps
     
     dev = np.std(np.diff(T_full))  # Standard deviation in dt's of T_full
     
@@ -64,7 +78,7 @@ def waveform(f, A, b, t0, tend, d_end_t, gamma, phi0, N=1000):
     pl.plot(T_full, y_full, color = 'orange', linewidth=2)  # Signal
     pl.savefig('waveform.png')
     
-    return(dt,T_full,d)
+    return(dt, T_full, d)
 
 # f,A,b,t0,tend,d_end_t,gamma,phi0
 
