@@ -78,7 +78,7 @@ def waveform(f, A, b, t0, tend, d_end_t=None, gamma=0.0,
     
     if verbose:
         print("Creating random noise...")
-    np.random.seed(seed = 1)
+#    np.random.seed(seed = 1)
     noise = -b+2*b*np.random.random(len(T_full))  # Noise!
     
     if verbose:
@@ -87,10 +87,14 @@ def waveform(f, A, b, t0, tend, d_end_t=None, gamma=0.0,
     
     # Graphing   
     pl.rcParams.update({'font.size': 18})
-    pl.figure(figsize=(12,10))
+    pl.figure(figsize=(20,15))
     pl.plot(T_full, noise, color = 'green', linewidth=2)  # Noise
     pl.plot(T_full, d, color = 'black', linewidth=2)  # Combined
-    pl.plot(T_full, y_full, color = 'orange', linewidth=2)  # Signal
+    pl.plot(T, y, color = 'orange', linewidth=2)  # Signal
+    pl.xlabel("Time")
+    pl.ylabel("displacement")
+    text = "f={}; A={}; b={}; t0={}; tend={}; gamma={}; N={}"
+    pl.title(text.format(f, A, b, t0, tend, gamma, N))
     pl.savefig('waveform.png')
     
     return(dt, T_full, d)
