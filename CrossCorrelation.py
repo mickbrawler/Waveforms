@@ -10,9 +10,9 @@ class Crosscor:
         self.tfull = np.array(data["t_full"])
         self.d = np.array(data["d"])
 
-    def template(self, f,gamma,duration):
+    def template(self, f, gamma, duration):
         
-        t = np.arange(0,duration+self.dt,self.dt) # Template time series is made in same dt as waveform
+        t = np.arange(0, duration + self.dt, self.dt)
         self.t = t        
         w = 2 * np.pi * f
         self.y = np.sin(w*t)*np.exp(-gamma*t)
@@ -20,13 +20,15 @@ class Crosscor:
     def match(self):
         
         ii = 0
+        time_slides = []
         match = []
         
         while len(self.d[ii:]) >= len(self.y):
-            print(len(self.d[ii:]))
-            match.append(np.sum(self.d[ii:len(self.y)] * self.y))
+            time_slides.append(ii*self.dt)
+            match.append(np.sum(self.d[ii: len(self.y) + ii] * self.y))
             ii += 1
         
-        self.match = numpy.array(match)
+        self.match = np.array(match)
+        self.time_slides = np.array(time_slides)
 
-        return(self.match)
+        return(self.time_slides, self.match)
