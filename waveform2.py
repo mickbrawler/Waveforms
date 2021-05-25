@@ -22,6 +22,7 @@ def waveform(f, A, b, t0, tend, d_end_t=None, gamma=0.0,
     phi0 : (Float) Initial phase of the signal. Default = 0.0
     N : (Int) Total number of time stamps. Default = 1000
     verbose: (Bool) Set True to get diagnostic stdout. Default = False
+    outputfile: (json) File containing dt, t_full, and d as a dictionary. Default = None
 
     OUTPUT
     ======
