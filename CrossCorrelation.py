@@ -30,5 +30,12 @@ class Crosscor:
         
         self.match = np.array(match)
         self.time_slides = np.array(time_slides)
+        
+        pl.rcParams.update({'font.size': 18})
+        pl.figure(figsize=(20,15))
+        pl.plot(self.time_slides, self.match, color = 'orange', linewidth=2)  # Match
+        pl.xlabel("Time")
+        pl.ylabel("Match")
+        pl.savefig('Crosscor.png')
 
         return(self.time_slides, self.match)
