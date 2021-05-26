@@ -33,7 +33,8 @@ class Crosscor:
         
         return(self.time_slides, self.M)
 
-def search(f_low, f_hi, gamma_low, gamma_hi, datafile, tmplt_dur):
+def search(f_low, f_hi, gamma_low, gamma_hi, datafile,
+           tmplt_dur, df=1.0, dg=0.1):
     """
     METHOD: Takes as input the upper and lower values of frequency 
     and gammas, constructs a bank of templates using this range of values, 
@@ -48,9 +49,11 @@ def search(f_low, f_hi, gamma_low, gamma_hi, datafile, tmplt_dur):
     gamma_hi: Upper bound of the gamma grid
     datafile: The JSON file with the data time series
     tmplt_dur: The duration of the templates
+    df: Step-size in frequency (default = 1.0)
+    dg: Step-size in gamma (default = 0.1)
     """
-    f = np.arange(f_low, f_hi+1, 1)
-    g = np.arange(gamma_low, gamma_hi + 0.1, 0.1)
+    f = np.arange(f_low, f_hi+df, df)
+    g = np.arange(gamma_low, gamma_hi + dg, dg)
 
     fs = []
     gs = []
