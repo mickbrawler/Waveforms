@@ -33,7 +33,7 @@ class Crosscor:
         
         return(self.time_slides, self.match) 
 
-def search(f_low, f_hi, gamma_low, gamma_hi,duration,datafile):
+def search(f_low, f_hi, gamma_low, gamma_hi,datafile):
     """
     METHOD: Takes as input the upper and lower values of frequency and gammas, constructs 
     a bank of templates using this range of values, and then computes the maximum of the 
