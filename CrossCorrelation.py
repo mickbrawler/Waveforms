@@ -13,7 +13,7 @@ class Crosscor:
     def template(self, f, gamma, duration):
         
         t = np.arange(0, duration + self.dt, self.dt)
-        self.t = t        
+        self.t = t
         w = 2 * np.pi * f
         self.y = np.sin(w*t)*np.exp(-gamma*t)
         
@@ -31,11 +31,36 @@ class Crosscor:
         self.match = np.array(match)
         self.time_slides = np.array(time_slides)
         
-        pl.rcParams.update({'font.size': 18})
-        pl.figure(figsize=(20,15))
-        pl.plot(self.time_slides, self.match, color = 'orange', linewidth=2)  # Match
-        pl.xlabel("Time")
-        pl.ylabel("Match")
-        pl.savefig('Crosscor.png')
-
         return(self.time_slides, self.match)
+    
+import importlib 
+
+f = np.arange(90,105+1,1)
+g = np.arange(0,1+.1,.1)
+
+fs = []
+gs = []
+Ms = []
+Ts = []
+
+for i in f:
+    for j in g:
+        
+        Obj = Crosscor("newdatafile.json")
+        Obj.template(i,j,40)
+        
+        M = m[np.argmax(m)] # Max match
+        T = t[np.argmax(m)] # Time associated with max match
+        fs.append(i)
+        gs.append(j)
+        Ts.append(T)
+        Ms.append(M)
+        
+output = np.vstack((fs,gs,Ts,Ms)).T
+np.savetxt("firstattempt.txt", output, fmt="%f\t%f\t%f\t%f")
+f,g,t,m = np.loadtxt("firstattempt.txt",unpack=True)
+        
+Maxm = m[np.argmax(m)]
+Maxt = t[np.argmax(m)]
+Maxg = g[np.argmax(m)]
+Maxf = f[np.argmax(m)]
