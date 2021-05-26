@@ -99,7 +99,7 @@ def plot(txtfile,plotfile):
     results = np.loadtxt(txtfile)
     f_array = results[:,0]
     m_array = results[:,3]
-    pl.rcParams.update({'fontsize':18})
+    pl.rcParams.update({'font.size':18})
     pl.figure(figsize=(20,15))
     pl.plot(f_array,m_array, linewidth=2)
     pl.xlabel("Frequency")
