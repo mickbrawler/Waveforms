@@ -33,19 +33,6 @@ class Crosscor:
         
         return(self.time_slides, self.M)
 
-def plot(txtfile,plotfile):
-    results = np.loadtxt(txtfile)
-    f_array = results[:,0]
-    m_array = results[:,3]
-    pl.rcParams.update({'fontsize':18})
-    pl.figure(figsize=(20,15))
-    pl.plot(f_array,m_array, linewidth=2)
-    pl.xlabel("Frequency")
-    pl.ylabel("Match")
-    pl.savefig(plotfile)
-
-
-
 def search(f_low, f_hi, gamma_low, gamma_hi, datafile,
            tmplt_dur, outputfile, df=1.0, dg=0.1):
     """
@@ -98,3 +85,23 @@ def search(f_low, f_hi, gamma_low, gamma_hi, datafile,
     return(Maxm, Maxt, Maxg, Maxf)
 
 #search(90,105,0,1,"newdatafile.json"
+
+def plot(txtfile,plotfile):
+    """
+    METHOD: Takes as input the search function's outputfile, loads it, then
+    isolates the frequency and match values to use as the x and y of the plot
+    
+    PARAMETERS:
+    ----------
+    txtfile: (txt) File that holds frequency, gamma, time, and match values
+    plotfile: (png) Plot of the frequency and match values of provided file
+    """
+    results = np.loadtxt(txtfile)
+    f_array = results[:,0]
+    m_array = results[:,3]
+    pl.rcParams.update({'fontsize':18})
+    pl.figure(figsize=(20,15))
+    pl.plot(f_array,m_array, linewidth=2)
+    pl.xlabel("Frequency")
+    pl.ylabel("Match")
+    pl.savefig(plotfile)
