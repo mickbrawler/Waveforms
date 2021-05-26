@@ -21,23 +21,32 @@ class Crosscor:
         
         ii = 0
         time_slides = []
-        match = []
+        M = []
         
         while len(self.d[ii:]) >= len(self.y):
             time_slides.append(ii*self.dt)
-            match.append(np.sum(self.d[ii: len(self.y) + ii] * self.y))
+            M.append(np.sum(self.d[ii: len(self.y) + ii] * self.y))
             ii += 1
         
-        self.match = np.array(match)
+        self.M = np.array(M)
         self.time_slides = np.array(time_slides)
         
-        return(self.time_slides, self.match) 
+        return(self.time_slides, self.M)
 
-def search(f_low, f_hi, gamma_low, gamma_hi,datafile):
+def search(f_low, f_hi, gamma_low, gamma_hi, datafile):
     """
-    METHOD: Takes as input the upper and lower values of frequency and gammas, constructs 
-    a bank of templates using this range of values, and then computes the maximum of the 
-    match for each templates in the bank and its corresponding time and returns that
+    METHOD: Takes as input the upper and lower values of frequency 
+    and gammas, constructs a bank of templates using this range of values, 
+    and then computes the maximum of the match for each templates in the 
+    bank and its corresponding time and returns that
+
+    PARAMETERS:
+    -----------
+    f_low: Lower bound of the frequency grid
+    f_hi: Upper bound of the frequency grid
+    gamma_low: Lower bound of the gamma grid
+    gamma_hi: Upper bound of the gamma grid
+    datafile: The JSON file with the data time series
     """
     f = np.arange(f_low, f_hi+1, 1)
     g = np.arange(gamma_low, gamma_hi + 0.1, 0.1)
@@ -50,8 +59,9 @@ def search(f_low, f_hi, gamma_low, gamma_hi,datafile):
     Obj = Crosscor(datafile)
     for i in f:
         for j in g:
-            Obj.template(i,j,40)
-            t,m = Obj.match()
+            print("f = {}\t gamma = {}".format(i, j))
+            Obj.template(i, j, 40)
+            t, m = Obj.match()
             M = m[np.argmax(m)] # Max match
             T = t[np.argmax(m)] # Time associated with max match
             fs.append(i)
@@ -59,16 +69,15 @@ def search(f_low, f_hi, gamma_low, gamma_hi,datafile):
             Ts.append(T)
             Ms.append(M)
 
-            output = np.vstack((fs,gs,Ts,Ms)).T
-            np.savetxt("firstattempt.txt", output, fmt="%f\t%f\t%f\t%f")
+    output = np.vstack((fs,gs,Ts,Ms)).T
+    np.savetxt("firstattempt.txt", output, fmt="%f\t%f\t%f\t%f")
 
-            f,g,t,m = np.loadtxt("firstattempt.txt",unpack=True)
+    max_index = np.argmax(Ms)
+    Maxm = Ms[max_index]
+    Maxt = Ts[max_index]
+    Maxg = gs[max_index]
+    Maxf = fs[max_index]
 
-    Maxm = m[np.argmax(m)]
-    Maxt = t[np.argmax(m)]
-    Maxg = g[np.argmax(m)]
-    Maxf = f[np.argmax(m)]
-    
-    return(Maxm,Maxt,Maxg,Maxf)
+    return(Maxm, Maxt, Maxg, Maxf)
 
-search(90,105,0,1,"newdatafile.json")
+#search(90,105,0,1,"newdatafile.json"
