@@ -34,7 +34,7 @@ class Crosscor:
         return(self.time_slides, self.M)
 
 def search(f_low, f_hi, gamma_low, gamma_hi, datafile,
-           tmplt_dur, df=1.0, dg=0.1):
+           tmplt_dur, outputfile, df=1.0, dg=0.1):
     """
     METHOD: Takes as input the upper and lower values of frequency 
     and gammas, constructs a bank of templates using this range of values, 
@@ -74,7 +74,7 @@ def search(f_low, f_hi, gamma_low, gamma_hi, datafile,
             Ms.append(M)
 
     output = np.vstack((fs,gs,Ts,Ms)).T
-    np.savetxt("firstattempt.txt", output, fmt="%f\t%f\t%f\t%f")
+    np.savetxt(outputfile, output, fmt="%f\t%f\t%f\t%f")
 
     max_index = np.argmax(Ms)
     Maxm = Ms[max_index]
