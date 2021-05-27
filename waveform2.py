@@ -99,7 +99,8 @@ def waveform(f, A, b, t0, tend, d_end_t=None, gamma=0.0, phi0=0.0,
     pl.title(text.format(f, A, b, t0, tend, gamma, N))
     if waveform_image is None:
         waveform_image = "waveform.png"
-    pl.savefig(waveform_image)
+    pl.savefig("figures/{}".format(waveform_image))
+    
     T_full = list(T_full)
     d = list(d)
     data = {"dt" : dt, "t_full" : T_full, "d" : d}
