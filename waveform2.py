@@ -2,8 +2,8 @@ import json
 import numpy as np
 import pylab as pl
 
-def waveform(f, A, b, t0, tend, d_end_t=None, gamma=0.0,
-             phi0=0.0, N=1000, verbose=False, outputfile=None):
+def waveform(f, A, b, t0, tend, d_end_t=None, gamma=0.0, phi0=0.0, 
+             N=1000, verbose=False, outputfile=None, waveform_image=None):
     """
     METHOD
     ======
@@ -97,7 +97,9 @@ def waveform(f, A, b, t0, tend, d_end_t=None, gamma=0.0,
     pl.ylabel("displacement")
     text = "f={}; A={}; b={}; t0={}; tend={}; gamma={}; N={}"
     pl.title(text.format(f, A, b, t0, tend, gamma, N))
-    pl.savefig('waveform.png')
+    if waveform_image is None:
+        waveform_image = "waveform.png"
+    pl.savefig(waveform_image)
     T_full = list(T_full)
     d = list(d)
     data = {"dt" : dt, "t_full" : T_full, "d" : d}
