@@ -74,6 +74,7 @@ def search(f_low, f_hi, gamma_low, gamma_hi, datafile,
             Ms.append(M)
 
     output = np.vstack((fs,gs,Ts,Ms)).T
+    outputfile = "results/{}".format(outputfile)
     np.savetxt(outputfile, output, fmt="%f\t%f\t%f\t%f")
 
     max_index = np.argmax(Ms)
@@ -104,4 +105,4 @@ def plot(txtfile,plotfile):
     pl.plot(f_array,m_array, linewidth=2)
     pl.xlabel("Frequency")
     pl.ylabel("Match")
-    pl.savefig(plotfile)
+    pl.savefig("figures/{}".format(plotfile))
