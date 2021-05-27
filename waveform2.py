@@ -90,8 +90,8 @@ def waveform(f, A, b, t0, tend, d_end_t=None, gamma=0.0, phi0=0.0,
     # Graphing   
     pl.rcParams.update({'font.size': 18})
     pl.figure(figsize=(20,15))
-    pl.plot(T_full, noise, color = 'green', linewidth=2)  # Noise
-    pl.plot(T_full, d, color = 'black', linewidth=2)  # Combined
+    pl.plot(T_full, noise, color = 'green', linewidth=1)  # Noise
+    pl.plot(T_full, d, color = 'black', linewidth=1)  # Combined
     pl.plot(T, y, color = 'orange', linewidth=2)  # Signal
     pl.xlabel("Time")
     pl.ylabel("displacement")
