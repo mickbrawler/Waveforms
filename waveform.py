@@ -1,54 +1,112 @@
+import json
 import numpy as np
 import pylab as pl
 
-def waveform(f,A,b,t0,tend,t,gamma,phi0,n = 1000):
+def waveform(f, A, b, t0, tend, d_end_t=None, gamma=0.0, phi0=0.0, 
+             N=1000, verbose=False, outputfile=None, waveform_image=None):
+    """
+    METHOD
+    ======
+    Takes input parameters of a wave and the strength and duration of
+    noise, and returns the data.
+
+    PARAMETERS
+    ==========
+    f : (Float) Frequency of the signal
+    A : (Float) Amplitude of the signal
+    b : (Float) Amplitude of the noise
+    t0 : (Float) Timestamp of the beginning of the signal
+    tend : (Float) Time stamp of the end of the signal
+    d_end_t : (Float) Time stamp of the end time of the data. Default = None
+    gamma : (Float) Attenuation factor of the signal. Default = 0.0
+    phi0 : (Float) Initial phase of the signal. Default = 0.0
+    N : (Int) Total number of time stamps. Default = 1000
+    verbose: (Bool) Set True to get diagnostic stdout. Default = False
+    outputfile: (json) File containing dt, t_full, and d as a dictionary. Default = None
+
+    OUTPUT
+    ======
+    A tuple of a float and two numpy arrays (dt, T_full, d), where dt is 
+    the resolution of the time series. T_full is the full list of time stamps
+    of the data starting at 0 and ending and d_end_t, and d is the 
+    corresponding displacement values in the data.
+
+    """
     
     # Conditional for noise duration
-    if tend > t: 
-        t = tend + 2
-
-    # Method of finding dt (Generally it uses the next best n if it doesn't work)
-    n = np.arange(1,n+1) # 1 to given stepcount will be used to find stepcount that works best
-
-    dt = (tend - t0)/n # dt is now the dt's from t0 to tend from the stepcounts from 1 to given
-
-    n, dt = np.meshgrid(n, dt) # Creates matrixes of n (x axis), dt (y axis)
-
-    tcandidates = dt * n # Find all potential times for each dt
-
-    correctdt = min(dt[(tcandidates == t0) | (tcandidates == (tend-t0))]) # Match potential times with t0 and (t-tend)
-         
-    # Obtain n value for all three intervals: 0_t0, t0_tend, tend_t
-    leftn = (t0-0)/correctdt 
-    signaln = (tend - t0)/correctdt 
-    rightn = (t-tend)/correctdt
+    # If the data-end time is supplied to be too small:
+    if verbose:
+        print("Making sure that the stretch of data is longer than signal")
+    assert t0 > 0, "Signal should start later than t=0"
+    if (d_end_t is None) or (tend > d_end_t - 10):
+        d_end_t = tend + 10
+        if verbose:
+            print("data end time is set at {}".format(d_end_t))
     
-    totlen = leftn + signaln + rightn # Number upto which dt will be multiplied by to get time stamps
+    T = np.linspace(t0, tend, N) # Time stamps of signal
+    dt = np.mean(np.diff(T)) # figuring out the resolution of the series
+    if verbose:
+        print("Mean value of timing resolution = {}".format(dt))
+    
+    t = t0 # Initializing the time series at the start time
+    t_minus = [] # To populate time stamps prior to the signal start
+    while t >= 0: # Making sure that we reach all the way back to zero.
+        t = t - dt
+        t_minus.append(t)  # Create time spamps from (t0-dt) to 0
 
-    T = correctdt * np.arange(totlen+1) # Timestamps!
- 
-    #Endgame
-    w = 2*np.pi*f
+    t_minus = np.array(t_minus)[::-1]  # Reverse to be from 0 to t0
+    t_minus = t_minus[t_minus >= 0]  # Eliminate numbers less than 0
     
-    BoolT = (T>t0) & (T<tend)    # Create boolean version of T array where Falses are the padding
-    BoolT = BoolT.astype(int)
-    Y = A*np.sin(w*T + phi0)*np.exp(-gamma*T)
-    Y = Y * BoolT    # Isolate signal data, make the rest 0s
+    t_plus = np.arange(tend+dt, d_end_t, dt)  # Time stamps from (tend+dt) to d_end_t, in dt's
     
-    np.random.seed(seed = 1)
-    y = b * np.random.uniform(-1,1,len(Y)) # Noise!
+    T_full = np.hstack((t_minus, T, t_plus))  # Connect time stamps
     
-    d = Y + y # Complete Data!
+    dev = np.std(np.diff(T_full))  # Standard deviation in dt's of T_full
+    if verbose:
+        print("Standard deviation of the resolution of time = {}".format(dev))
+
+    if verbose:
+        print("Creating time series of the signal...")
+    w = 2 * np.pi * f  
+    y = A*np.sin(w*T + phi0)*np.exp(-gamma*(T-t0))
+
     
-    # Graphing
+    # Padding of signal data
+    if verbose:
+        print("Creating the zero-padded signal...")
+    y_minus = np.zeros_like(t_minus)
+    y_plus = np.zeros_like(t_plus)
+    y_full = np.hstack((y_minus, y, y_plus))
+    
+    if verbose:
+        print("Creating random noise...")
+#    np.random.seed(seed = 1)
+    noise = -b+2*b*np.random.random(len(T_full))  # Noise!
+    
+    if verbose:
+        print("Creating final data")
+    d = noise + y_full  # Complete Data!
+    
+    # Graphing   
     pl.rcParams.update({'font.size': 18})
-    pl.figure(figsize=(12,10))
-    pl.plot(T, y, color = 'green', linewidth=2) # Noise
-    pl.plot(T, d, color = 'black', linewidth=2) # Combined
-    pl.plot(T, Y, color = 'orange', linewidth=2) # Signal
-    pl.savefig('waveform.png')
-        
-    return (T)
-
-# f,A,b,t0,tend,t,gamma,phi0
-waveform(1,1,1,1,3,5,0,0)
+    pl.figure(figsize=(20,15))
+    pl.plot(T_full, noise, color = 'green', linewidth=2)  # Noise
+    pl.plot(T_full, d, color = 'black', linewidth=2)  # Combined
+    pl.plot(T, y, color = 'orange', linewidth=2)  # Signal
+    pl.xlabel("Time")
+    pl.ylabel("displacement")
+    text = "f={}; A={}; b={}; t0={}; tend={}; gamma={}; N={}"
+    pl.title(text.format(f, A, b, t0, tend, gamma, N))
+    if waveform_image is None:
+        waveform_image = "waveform.png"
+    pl.savefig("figures/{}".format(waveform_image))
+    
+    T_full = list(T_full)
+    d = list(d)
+    data = {"dt" : dt, "t_full" : T_full, "d" : d}
+    if outputfile is None:
+        outputfile = "default_data.json"
+    outputfile = "data/{}".format(outputfile)
+    with open(outputfile, "w") as f:
+        json.dump(data, f, indent=2, sort_keys=True)
+    return(dt, T_full, d)
