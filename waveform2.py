@@ -106,6 +106,7 @@ def waveform(f, A, b, t0, tend, d_end_t=None, gamma=0.0, phi0=0.0,
     data = {"dt" : dt, "t_full" : T_full, "d" : d}
     if outputfile is None:
         outputfile = "default_data.json"
+    outputfile = "data/{}".format(outputfile)
     with open(outputfile, "w") as f:
         json.dump(data, f, indent=2, sort_keys=True)
     return(dt, T_full, d)
