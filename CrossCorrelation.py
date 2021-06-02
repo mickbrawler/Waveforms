@@ -51,6 +51,7 @@ def search(f_low, f_hi, gamma_low, gamma_hi, datafile,
     tmplt_dur: The duration of the templates
     df: Step-size in frequency (default = 1.0)
     dg: Step-size in gamma (default = 0.1)
+    outputfile: The txt file with the two dimensional search results
     """
     f = np.arange(f_low, f_hi+df, df)
     g = np.arange(gamma_low, gamma_hi + dg, dg)
