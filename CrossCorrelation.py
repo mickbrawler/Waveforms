@@ -91,6 +91,24 @@ def search(f_low, f_hi, gamma_low, gamma_hi, datafile,
 def combine(f_low, f_hi, gamma_low, gamma_hi, datafile,
            tmplt_dur, matchfile, df=1.0, dg=0.1):
     
+    """
+    METHOD: Takes as input the upper and lower values of frequency 
+    and gammas, constructs a bank of templates using this range of values, 
+    and then computes the matches for each set.
+
+    PARAMETERS:
+    -----------
+    f_low: Lower bound of the frequency grid
+    f_hi: Upper bound of the frequency grid
+    gamma_low: Lower bound of the gamma grid
+    gamma_hi: Upper bound of the gamma grid
+    datafile: The JSON file with the data time series
+    tmplt_dur: The duration of the templates
+    df: Step-size in frequency (default = 1.0)
+    dg: Step-size in gamma (default = 0.1)
+    matchfile: The json file with the match array
+    """
+    
     f = np.arange(f_low, f_hi+df, df)
     g = np.arange(gamma_low, gamma_hi + dg, dg)
 
