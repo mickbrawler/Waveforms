@@ -3,7 +3,7 @@ import numpy as np
 import pylab as pl
 
 def waveform(f, A, b, t0, tend, d_end_t=None, gamma=0.0, phi0=0.0, 
-             N=1000, verbose=False, outputfile=None, waveform_image=None):
+             N=1000, verbose=False, seed_number=None, project_name=None):
     """
     METHOD
     ======
@@ -22,7 +22,8 @@ def waveform(f, A, b, t0, tend, d_end_t=None, gamma=0.0, phi0=0.0,
     phi0 : (Float) Initial phase of the signal. Default = 0.0
     N : (Int) Total number of time stamps. Default = 1000
     verbose: (Bool) Set True to get diagnostic stdout. Default = False
-    outputfile: (json) File containing dt, t_full, and d as a dictionary. Default = None
+    seed_number: (Int) Number set to seed noise. Default = None
+    project_name: (String) Name given to png and json file created. Default = None
 
     OUTPUT
     ======
@@ -80,7 +81,9 @@ def waveform(f, A, b, t0, tend, d_end_t=None, gamma=0.0, phi0=0.0,
     
     if verbose:
         print("Creating random noise...")
-#    np.random.seed(seed = 1)
+    if seed_number is None:
+        seed_number = 1
+    np.random.seed(seed = seed_number)
     noise = -b+2*b*np.random.random(len(T_full))  # Noise!
     
     if verbose:
@@ -97,16 +100,14 @@ def waveform(f, A, b, t0, tend, d_end_t=None, gamma=0.0, phi0=0.0,
     pl.ylabel("displacement")
     text = "f={}; A={}; b={}; t0={}; tend={}; gamma={}; N={}"
     pl.title(text.format(f, A, b, t0, tend, gamma, N))
-    if waveform_image is None:
-        waveform_image = "waveform.png"
-    pl.savefig("figures/{}".format(waveform_image))
+    if project_name is None:
+        project_name = "test"
+    pl.savefig("figures/{}-waveform_plot-f_{}-A_{}-b_{}-t0_{}-tend_{}-gamma_{}-seed_{}.png".format(project_name, f, A, b, t0, tend, gamma, seed_number))
     
     T_full = list(T_full)
     d = list(d)
     data = {"dt" : dt, "t_full" : T_full, "d" : d}
-    if outputfile is None:
-        outputfile = "default_data.json"
-    outputfile = "data/{}".format(outputfile)
+    outputfile = "data/{}-waveform_data-f_{}-A_{}-b_{}-t0_{}-tend_{}-gamma_{}-seed_{}.json".format(project_name, f, A, b, t0, tend, gamma, seed_number)
     with open(outputfile, "w") as f:
         json.dump(data, f, indent=2, sort_keys=True)
     return(dt, T_full, d)
