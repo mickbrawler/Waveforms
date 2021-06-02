@@ -88,6 +88,27 @@ def search(f_low, f_hi, gamma_low, gamma_hi, datafile,
 
 #search(90,105,0,1,"newdatafile.json"
 
+def combine(f_low, f_hi, gamma_low, gamma_hi, datafile,
+           tmplt_dur, matchfile, df=1.0, dg=0.1):
+    
+    f = np.arange(f_low, f_hi+df, df)
+    g = np.arange(gamma_low, gamma_hi + dg, dg)
+
+    M = []
+
+    Obj = Crosscor(datafile)
+    for i in f:
+        for j in g:
+            Obj.template(i, j, tmplt_dur)
+            t, m = Obj.match()
+            M.append(m)
+
+    M = np.array(M)
+    
+    outputfile = "results/{}.json".format(matchfile)
+    with open(outputfile, "w") as f:
+        json.dump(M, f)
+    
 def plot(txtfile,plotfile):
     """
     METHOD: Takes as input the search function's outputfile, loads it, then
