@@ -73,7 +73,7 @@ def matcharrays(f_low, f_hi, gamma_low, gamma_hi, datafile,
             F.append(i)
             G.append(j)
 
-    data = {"f" : F, "g" : G, "m" : M}
+    data = {"f" : F, "g" : G, "t" : T, "m" : M}
     
     outputfile = "results/{}.json".format(matchfile)
     with open(outputfile, "w") as f:
@@ -85,6 +85,7 @@ def combine(file1,file2,outputfile):
         data = json.load(f)
     f1 = data["f"]
     g = data["g"]
+    t = data["t"]
     m1 = data["m"]
 
     with open(file2, "r") as f:
@@ -94,23 +95,23 @@ def combine(file1,file2,outputfile):
     m1 = np.array(m1)
     m2 = np.array(m2)
 
-    M = ((m1 ** 2) + (m2 ** 2)) ** .5
-    M = list(map(max, M))
+    M1 = ((m1 ** 2) + (m2 ** 2)) ** .5
+    M = list(map(max, M1))
+    # t is still 2d List, some kind of indexing using the 
     M = np.array(M)
     max_Match = np.argmax(M)
     M = list(M)
 
-    f1 = f1[max_Match]
-    g = g[max_Match]
-    m = M[max_Match]
+    F = f1[max_Match]
+    G = g[max_Match]
+    #T = t[max_Match]
+    M = M[max_Match]
 
-    M = list(M) 
-     
-    output = np.vstack((f1,g,M)).T
-    outputfile = "results/{}".format(outputfile)
-    np.savetxt(outputfile, output, fmt="%f\t%f\t%f\t%f")
+    #output = np.vstack((f1,g,M)).T
+    #outputfile = "results/{}".format(outputfile)
+    #np.savetxt(outputfile, output, fmt="%f\t%f\t%f\t%f")
 
-    return(f1,g,m)
+    return(F,G,M)
 
 def search(f_low, f_hi, gamma_low, gamma_hi, datafile,
            tmplt_dur, outputfile, df=1.0, dg=0.1):
