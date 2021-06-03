@@ -61,12 +61,14 @@ def matcharrays(f_low, f_hi, gamma_low, gamma_hi, datafile,
     F = []
     G = []
     M = []
+    T = []
 
     Obj = Crosscor(datafile)
     for i in f:
         for j in g:
             Obj.template(i, j, tmplt_dur)
             t, m = Obj.match()
+            T.append(list(t))
             M.append(list(m))
             F.append(i)
             G.append(j)
@@ -93,13 +95,22 @@ def combine(file1,file2,outputfile):
     m2 = np.array(m2)
 
     M = ((m1 ** 2) + (m2 ** 2)) ** .5
-    Match = M.tolist()
-    
-    # Still needs to find global maximum
+    M = list(map(max, M))
+    M = np.array(M)
+    max_Match = np.argmax(M)
+    M = list(M)
 
-    Data = {"f" : f1, "g" : g, "m" : Match}
-    with open(outputfile, "w") as f:
-        json.dump(Data, f, indent = 2, sort_keys=True)
+    f1 = f1[max_Match]
+    g = g[max_Match]
+    m = M[max_Match]
+
+    M = list(M) 
+     
+    output = np.vstack((f1,g,M)).T
+    outputfile = "results/{}".format(outputfile)
+    np.savetxt(outputfile, output, fmt="%f\t%f\t%f\t%f")
+
+    return(f1,g,m)
 
 def search(f_low, f_hi, gamma_low, gamma_hi, datafile,
            tmplt_dur, outputfile, df=1.0, dg=0.1):
