@@ -33,6 +33,75 @@ class Crosscor:
         
         return(self.time_slides, self.M)
 
+
+def matcharrays(f_low, f_hi, gamma_low, gamma_hi, datafile,
+           tmplt_dur, matchfile, df=1.0, dg=0.1):
+    
+    """
+    METHOD: Takes as input the upper and lower values of frequency 
+    and gammas, constructs a bank of templates using this range of values, 
+    and then computes the matches for each set.
+
+    PARAMETERS:
+    -----------
+    f_low: Lower bound of the frequency grid
+    f_hi: Upper bound of the frequency grid
+    gamma_low: Lower bound of the gamma grid
+    gamma_hi: Upper bound of the gamma grid
+    datafile: The JSON file with the data time series
+    tmplt_dur: The duration of the templates
+    df: Step-size in frequency (default = 1.0)
+    dg: Step-size in gamma (default = 0.1)
+    matchfile: Name for json file with matches
+    """
+    
+    f = np.arange(f_low, f_hi+df, df)
+    g = np.arange(gamma_low, gamma_hi + dg, dg)
+
+    F = []
+    G = []
+    M = []
+
+    Obj = Crosscor(datafile)
+    for i in f:
+        for j in g:
+            Obj.template(i, j, tmplt_dur)
+            t, m = Obj.match()
+            M.append(list(m))
+            F.append(i)
+            G.append(j)
+
+    data = {"f" : F, "g" : G, "m" : M}
+    
+    outputfile = "results/{}.json".format(matchfile)
+    with open(outputfile, "w") as f:
+        json.dump(data, f, indent=2, sort_keys=True)
+
+def combine(file1,file2,outputfile):
+    
+    with open(file1, "r") as f:
+        data = json.load(f)
+    f = data["f"]
+    g = data["g"]
+    m1 = data["m"]
+
+    with open(file2, "r") as f:
+        data = json.load(f)
+    m2 = data["m"]
+
+    m1 = np.array(m1)
+    m2 = np.array(m2)
+
+    M = ((m1 ** 2) + (m2 ** 2)) ** .5
+    #M = list(M)
+    
+    # Still needs to find global maximum
+
+    #Data = {"f" : f, "g" : g, "m" : M}
+    #with open(outputfile, "w") as f:
+    #    json.dump(Data, f, indent = 2, sort_keys=True)
+    return(M)
+
 def search(f_low, f_hi, gamma_low, gamma_hi, datafile,
            tmplt_dur, outputfile, df=1.0, dg=0.1):
     """
@@ -88,45 +157,6 @@ def search(f_low, f_hi, gamma_low, gamma_hi, datafile,
 
 #search(90,105,0,1,"newdatafile.json"
 
-def combine(f_low, f_hi, gamma_low, gamma_hi, datafile,
-           tmplt_dur, matchfile, df=1.0, dg=0.1):
-    
-    """
-    METHOD: Takes as input the upper and lower values of frequency 
-    and gammas, constructs a bank of templates using this range of values, 
-    and then computes the matches for each set.
-
-    PARAMETERS:
-    -----------
-    f_low: Lower bound of the frequency grid
-    f_hi: Upper bound of the frequency grid
-    gamma_low: Lower bound of the gamma grid
-    gamma_hi: Upper bound of the gamma grid
-    datafile: The JSON file with the data time series
-    tmplt_dur: The duration of the templates
-    df: Step-size in frequency (default = 1.0)
-    dg: Step-size in gamma (default = 0.1)
-    matchfile: The json file with the match array
-    """
-    
-    f = np.arange(f_low, f_hi+df, df)
-    g = np.arange(gamma_low, gamma_hi + dg, dg)
-
-    M = []
-
-    Obj = Crosscor(datafile)
-    for i in f:
-        for j in g:
-            Obj.template(i, j, tmplt_dur)
-            t, m = Obj.match()
-            M.append(m)
-
-    M = np.array(M)
-    
-    outputfile = "results/{}.json".format(matchfile)
-    with open(outputfile, "w") as f:
-        json.dump(M, f)
-    
 def plot(txtfile,plotfile):
     """
     METHOD: Takes as input the search function's outputfile, loads it, then
