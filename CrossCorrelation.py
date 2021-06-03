@@ -81,7 +81,7 @@ def combine(file1,file2,outputfile):
     
     with open(file1, "r") as f:
         data = json.load(f)
-    f = data["f"]
+    f1 = data["f"]
     g = data["g"]
     m1 = data["m"]
 
@@ -93,14 +93,13 @@ def combine(file1,file2,outputfile):
     m2 = np.array(m2)
 
     M = ((m1 ** 2) + (m2 ** 2)) ** .5
-    #M = list(M)
+    Match = M.tolist()
     
     # Still needs to find global maximum
 
-    #Data = {"f" : f, "g" : g, "m" : M}
-    #with open(outputfile, "w") as f:
-    #    json.dump(Data, f, indent = 2, sort_keys=True)
-    return(M)
+    Data = {"f" : f1, "g" : g, "m" : Match}
+    with open(outputfile, "w") as f:
+        json.dump(Data, f, indent = 2, sort_keys=True)
 
 def search(f_low, f_hi, gamma_low, gamma_hi, datafile,
            tmplt_dur, outputfile, df=1.0, dg=0.1):
