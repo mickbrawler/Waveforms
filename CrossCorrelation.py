@@ -80,7 +80,22 @@ def matcharrays(f_low, f_hi, gamma_low, gamma_hi, datafile,
         json.dump(data, f, indent=2, sort_keys=True)
 
 def combine(file1,file2,outputfile):
+   
     
+    """
+    METHOD: Takes two json files (can be adjusted to accept more) and performs
+    the combined m operation to lower effect of noise. 
+
+    PARAMETERS:
+    -----------
+    file1: (json) First waveform json file
+    file2: (json) Second waveform json file
+    outputfile: (String) Name for txt file that will store data for analysis
+
+    OUTPUT: Creates txt file with lists of each run of frequency, gamma, time
+    slides, and matches.
+    """
+
     with open(file1, "r") as f:
         data = json.load(f)
     f1 = data["f"]
@@ -94,24 +109,33 @@ def combine(file1,file2,outputfile):
 
     m1 = np.array(m1)
     m2 = np.array(m2)
+    t = np.array(t)
 
-    M1 = ((m1 ** 2) + (m2 ** 2)) ** .5
-    M = list(map(max, M1))
-    # t is still 2d List, some kind of indexing using the 
+    combinedM = ((m1 ** 2) + (m2 ** 2)) ** .5
+   
+    M = []
+    T = []
+    step = 0
+
+    for i in combinedM:
+        x = np.argmax(i)
+        T.append(t[step,x])
+        M.append(combinedM[step,x])
+        step += 1
+    
     M = np.array(M)
     max_Match = np.argmax(M)
-    M = list(M)
 
-    F = f1[max_Match]
-    G = g[max_Match]
-    #T = t[max_Match]
-    M = M[max_Match]
+    globF = f1[max_Match]
+    globG = g[max_Match]
+    globT = T[max_Match]
+    globM = M[max_Match]
 
-    #output = np.vstack((f1,g,M)).T
-    #outputfile = "results/{}".format(outputfile)
-    #np.savetxt(outputfile, output, fmt="%f\t%f\t%f\t%f")
+    output = np.vstack((f1,g,T,M)).T
+    outputfile = "results/{}".format(outputfile)
+    np.savetxt(outputfile, output, fmt="%f\t%f\t%f\t%f")
 
-    return(F,G,M)
+    return(globF,globG,globT,globM)
 
 def search(f_low, f_hi, gamma_low, gamma_hi, datafile,
            tmplt_dur, outputfile, df=1.0, dg=0.1):
