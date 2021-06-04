@@ -53,6 +53,9 @@ def matcharrays(f_low, f_hi, gamma_low, gamma_hi, datafile,
     df: Step-size in frequency (default = 1.0)
     dg: Step-size in gamma (default = 0.1)
     matchfile: Name for json file with matches
+    
+    OUTPUT:  Creates json file with frequency in a list, gamma in a list,
+    time in a 2d list, and matches in a 2d list.
     """
     
     f = np.arange(f_low, f_hi+df, df)
@@ -79,8 +82,7 @@ def matcharrays(f_low, f_hi, gamma_low, gamma_hi, datafile,
     with open(outputfile, "w") as f:
         json.dump(data, f, indent=2, sort_keys=True)
 
-def combine(file1,file2,outputfile):
-   
+def combine(file1,file2,file3,file4,file5,outputfile):
     
     """
     METHOD: Takes two json files (can be adjusted to accept more) and performs
@@ -90,6 +92,9 @@ def combine(file1,file2,outputfile):
     -----------
     file1: (json) First waveform json file
     file2: (json) Second waveform json file
+    file3: (json) Third waveform json file
+    file4: (json) Four waveform json file
+    file5: (json) Five waveform json file
     outputfile: (String) Name for txt file that will store data for analysis
 
     OUTPUT: Creates txt file with lists of each run of frequency, gamma, time
@@ -106,12 +111,27 @@ def combine(file1,file2,outputfile):
     with open(file2, "r") as f:
         data = json.load(f)
     m2 = data["m"]
+    
+    with open(file3, "r") as f:
+        data = json.load(f)
+    m3 = data["m"]
+    
+    with open(file4, "r") as f:
+        data = json.load(f)
+    m4 = data["m"]
+    
+    with open(file5, "r") as f:
+        data = json.load(f)
+    m5 = data["m"]
 
     m1 = np.array(m1)
     m2 = np.array(m2)
+    m3 = np.array(m3)
+    m4 = np.array(m4)
+    m5 = np.array(m5)
     t = np.array(t)
 
-    combinedM = ((m1 ** 2) + (m2 ** 2)) ** .5
+    combinedM = ((m1 ** 2) + (m2 ** 2) + (m3 ** 2) + (m4 ** 2) + (m5 ** 2)) ** .5
    
     M = []
     T = []
