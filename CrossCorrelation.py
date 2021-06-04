@@ -93,7 +93,7 @@ def combine(file1,file2,outputfile):
     outputfile: (String) Name for txt file that will store data for analysis
 
     OUTPUT: Creates txt file with lists of each run of frequency, gamma, time
-    slides, and matches.
+    slides, and matches. Return global maximum values
     """
 
     with open(file1, "r") as f:
@@ -123,8 +123,7 @@ def combine(file1,file2,outputfile):
         M.append(combinedM[step,x])
         step += 1
     
-    M = np.array(M)
-    max_Match = np.argmax(M)
+    max_Match = np.argmax(np.array(M))
 
     globF = f1[max_Match]
     globG = g[max_Match]
