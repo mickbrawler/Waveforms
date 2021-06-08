@@ -16,7 +16,7 @@ class Crosscor:
         self.t = t
         w = 2 * np.pi * f
         self.y = np.sin(w*t)*np.exp(-gamma*t)
-        
+    
     def match(self):
         
         ii = 0
