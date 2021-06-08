@@ -151,7 +151,7 @@ def combine(file1,file2,file3,file4,file5,outputfile):
     globM = M[max_Match]
 
     output = np.vstack((f1,g,T,M)).T
-    outputfile = "results/{}".format(outputfile)
+    outputfile = "results/{}.txt".format(outputfile)
     np.savetxt(outputfile, output, fmt="%f\t%f\t%f\t%f")
 
     return(globF,globG,globT,globM)
