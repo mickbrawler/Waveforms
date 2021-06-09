@@ -3,7 +3,7 @@ import numpy as np
 import pylab as pl
 from numba import jit
 
-def multidetect(file1,file2,file3,file4,file5):
+def multidetect(file1,file2):
     
     """
     PARAMETERS:
