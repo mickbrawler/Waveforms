@@ -3,13 +3,19 @@ import numpy as np
 import pylab as pl
 from numba import jit
 
-def multidetect(file1,file2):
+def multidetect(file1, file2, threshold, forgive):
     
     """
+    METHOD: Takes files, a match threshold, and a forgiveness value to
+    find common peaks accross each "detector's" match arrays
+
     PARAMETERS:
     -----------
     file1: (json) First waveform json file
     file2: (json) Second waveform json file
+
+    OUTPUT: Returns the global maximum values of frequency, gamma, time,
+    and the corresponding match value.
     """
 
     with open(file1, "r") as f:
@@ -23,6 +29,12 @@ def multidetect(file1,file2):
         data = json.load(f)
     M2 = data["m"]
     
+    M1 = np.array(M1)
+    M2 = np.array(M2)
+
+    M1 = (M1 > threshold) * M1
+    M2 = (M2 > threshold) * M2
+
     # Method of finding common peaks
     # Currently gives no leeway to index of common peaks across detectors, only leeway to peaks' match values
     peakIndice0 = np.array([])
@@ -37,8 +49,8 @@ def multidetect(file1,file2):
         potentialValue = np.array([])
         
         while len(m[i:]) >= 3: # Don't let "window" go beyond match array
-            if m[i] < m[i+1] & m[i+1] > m[i+2]:
-                if (M2[j,i+1] > m[i+1] - 10 and M2[j,i+1] < m[i+1] + 10) & (M2[j,i] < M2[j,i+1] & M2[j,i+1] > M2[j,i+2]):
+            if m[i] < m[i+1] and m[i+1] > m[i+2]:
+                if M2[j,i+1] > m[i+1] - forgive and M2[j,i+1] < m[i+1] + forgive and M2[j,i] < M2[j,i+1] and M2[j,i+1] > M2[j,i+2]:
                 #  Gives leeway to compatible peak values. See if peak is present in 2nd detector in same index as first
                     potentialIndice0 = np.append(potentialIndice0,j)
                     potentialIndice = np.append(potentialIndice,i+1)
@@ -62,4 +74,4 @@ def multidetect(file1,file2):
         MaxpeakIndice = peakIndice[maxIndexM]
         MaxpeakValue =  peakValue[maxIndexM] 
     
-    return(f[MaxpeakIndice0],g[MaxpeakIndice0],t[MaxpeakIndice0,MaxpeakIndice],MaxpeakValue)
+        return(f[MaxpeakIndice0],g[MaxpeakIndice0],t[MaxpeakIndice0,MaxpeakIndice],MaxpeakValue)
