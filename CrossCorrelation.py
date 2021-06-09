@@ -1,6 +1,7 @@
 import json
 import numpy as np
 import pylab as pl
+from numba import jit
 
 class Crosscor:
     def __init__(self, filename):
@@ -17,6 +18,7 @@ class Crosscor:
         w = 2 * np.pi * f
         self.y = np.sin(w*t)*np.exp(-gamma*t)
     
+    @jit(nopython=True)
     def match(self):
         
         ii = 0
