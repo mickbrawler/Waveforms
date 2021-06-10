@@ -3,6 +3,24 @@ import numpy as np
 import pylab as pl
 from numba import jit
 
+@jit(nopython=True)
+def match(data, template, dt):
+        
+    ii = 0
+    time_slides = []
+    M = []
+        
+    while len(data[ii:]) >= len(template):
+        time_slides.append(ii*dt)
+        M.append(np.sum(data[ii: len(template) + ii] * template))
+        ii += 1
+        
+    M = np.array(M)
+    time_slides = np.array(time_slides)
+        
+    return(time_slides, M)
+
+
 class Crosscor:
     def __init__(self, filename):
         with open(filename, "r") as f:
@@ -18,24 +36,7 @@ class Crosscor:
         w = 2 * np.pi * f
         self.y = np.sin(w*t)*np.exp(-gamma*t)
     
-    @jit(nopython=True)
-    def match(self):
-        
-        ii = 0
-        time_slides = []
-        M = []
-        
-        while len(self.d[ii:]) >= len(self.y):
-            time_slides.append(ii*self.dt)
-            M.append(np.sum(self.d[ii: len(self.y) + ii] * self.y))
-            ii += 1
-        
-        self.M = np.array(M)
-        self.time_slides = np.array(time_slides)
-        
-        return(self.time_slides, self.M)
-
-
+# @jit(nopython=True)
 def matcharrays(f_low, f_hi, gamma_low, gamma_hi, datafile,
            tmplt_dur, matchfile, df=1.0, dg=0.1):
     
@@ -72,7 +73,7 @@ def matcharrays(f_low, f_hi, gamma_low, gamma_hi, datafile,
     for i in f:
         for j in g:
             Obj.template(i, j, tmplt_dur)
-            t, m = Obj.match()
+            t, m = match(Obj.d, Obj.y, Obj.dt)
             T.append(list(t))
             M.append(list(m))
             F.append(i)
