@@ -3,6 +3,7 @@ import numpy as np
 import pylab as pl
 from numba import jit
 
+# Original bare-bones approach to Multiple Detector Problem
 def multidetect(file1, file2, threshold, forgive):
     
     """
@@ -75,3 +76,77 @@ def multidetect(file1, file2, threshold, forgive):
         MaxpeakValue =  peakValue[maxIndexM] 
     
         return(f[MaxpeakIndice0],g[MaxpeakIndice0],t[MaxpeakIndice0,MaxpeakIndice],MaxpeakValue)
+
+def window(file1,file2):
+    """
+    METHOD
+    ======
+    Window of set size will slide through data and append the maximum 
+    match in it to a list. For the corresponding windows in each detector,
+    their maximums will be squared, summed, and square rooted. Index of 
+    max value must be utilized to obtain global maximums: frequency, 
+    gamma, and time.
+
+    PARAMETERS
+    ==========
+    file1: (json) First waveform json file
+    file2: (json) Second waveform json file
+
+    OUTPUT
+    ======
+    Returns global maximum values of frequency, gamma, time, and match
+    """
+
+    with open(file1, "r") as f:
+        data = json.load(f)
+    f1 = data["f"]
+    g = data["g"]
+    t = data["t"]
+    M1 = data["m"]
+
+    with open(file2, "r") as f:
+        data = json.load(f)
+    M2 = data["m"]
+    
+    M1 = np.array(M1)
+    M2 = np.array(M2)
+    
+    i = 0
+    j = 0
+
+    for m in M1:
+        
+        windMatchIndices0 = np.array([])
+        windMatchIndices = np.array([])
+        windMatches = np.array([])
+
+        while True:
+            if len(m[i:i+6]) > len(m[i:]):
+                # Change to an alteration of window size
+                windMatchIndex = np.where(m == np.amax(m[i:i+len(m[i:]))
+
+                windMatchIndices0 = np.append(windMatchIndices0,j)
+                windMatchIndices = np.append(windMatchIndices,i)
+
+                operation = ((m[windMatchIndex] ** 2) + (M2[j,windMatchIndex] ** 2)) ** .5
+                windMatches = np.append(windMatches, operation)
+                False
+            
+            elif len(m[i:i+6]) < len(m[i:]): 
+                windMatchIndex = np.where(m == np.amax(m[i:i+6))
+
+                windMatchIndices0 = np.append(windMatchIndices0,j)
+                windMatchIndices = np.append(windMatchIndices,i)
+
+                operation = ((m[windMatchIndex] ** 2) + (M2[j,windMatchIndex] ** 2)) ** .5
+                windMatches = np.append(windMatches, operation)
+                
+                i += 1
+        j += 1
+    
+    MaxMatchIndex = np.argmax(windMatches)
+    MaxIndice0 = windMatchIndices0[MaxMatchIndex]
+    MaxIndice = windMatchIndices[MaxMatchIndex]
+    MaxMatch = windMatches[MaxMatchIndex]
+
+    return(f[MaxIndice],g[MaxIndice0],t[MaxIndice0,MaxIndice],MaxMatch)
