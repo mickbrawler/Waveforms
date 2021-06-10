@@ -36,7 +36,7 @@ class Crosscor:
         w = 2 * np.pi * f
         self.y = np.sin(w*t)*np.exp(-gamma*t)
     
-@jit(nopython=True)
+#@jit(nopython=True)
 def matcharrays(f_low, f_hi, gamma_low, gamma_hi, datafile,
            tmplt_dur, matchfile, df=1.0, dg=0.1):
     
