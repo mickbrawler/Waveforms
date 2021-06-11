@@ -113,40 +113,51 @@ def window(file1,file2):
     
     i = 0
     j = 0
-
+    windMatches = np.array([])
+    MaxPeak1 = np.array([])
+    MaxPeak2 = np.array([])
+    MatchListMaxs = np.array([])
+    jIndices = np.array([])
+    iIndices = np.array([])
     for m in M1:
         
-        windMatchIndices0 = np.array([])
-        windMatchIndices = np.array([])
-        windMatches = np.array([])
-
         while True:
-            if len(m[i:i+6]) > len(m[i:]):
-                # Change to an alteration of window size
-                windMatchIndex = np.where(m == np.amax(m[i:i+len(m[i:]))
-
-                windMatchIndices0 = np.append(windMatchIndices0,j)
-                windMatchIndices = np.append(windMatchIndices,i)
-
-                operation = ((m[windMatchIndex] ** 2) + (M2[j,windMatchIndex] ** 2)) ** .5
-                windMatches = np.append(windMatches, operation)
-                False
-            
-            elif len(m[i:i+6]) < len(m[i:]): 
-                windMatchIndex = np.where(m == np.amax(m[i:i+6))
-
-                windMatchIndices0 = np.append(windMatchIndices0,j)
-                windMatchIndices = np.append(windMatchIndices,i)
-
-                operation = ((m[windMatchIndex] ** 2) + (M2[j,windMatchIndex] ** 2)) ** .5
-                windMatches = np.append(windMatches, operation)
+            if len(m[i:i+10]) > len(m[i:]):
+                # Alteration of window size
+                M1Index = np.where(m == np.amax(m[i:i+len(m[i:])]))
+                M2Index = np.where(M2[j] == np.amax(M2[j,i:i+len(M2[j,i:])]))
                 
-                i += 1
-        j += 1
-    
-    MaxMatchIndex = np.argmax(windMatches)
-    MaxIndice0 = windMatchIndices0[MaxMatchIndex]
-    MaxIndice = windMatchIndices[MaxMatchIndex]
-    MaxMatch = windMatches[MaxMatchIndex]
+                iIndices = np.append(iIndices,i)
+                jIndices = np.append(jIndices,j)
 
-    return(f[MaxIndice],g[MaxIndice0],t[MaxIndice0,MaxIndice],MaxMatch)
+                MaxPeak1 = np.append(MaxPeak1,m[M1Index])
+                MaxPeak2 = np.append(MaxPeak2,M2[j,M2Index])
+
+                operation = ((m[M1Index] ** 2) + (M2[j,M2Index] ** 2)) ** .5
+                windMatches = np.append(windMatches, operation)
+                break
+            
+            else:
+
+                M1Index = np.where(m == np.amax(m[i:i+10]))
+                M2Index = np.where(M2[j] == np.amax(M2[j,i:i+10]))
+
+                iIndices = np.append(iIndices,i)
+                jIndices = np.append(jIndices,j)
+
+                MaxPeak1 = np.append(MaxPeak1,m[M1Index])
+                MaxPeak2 = np.append(MaxPeak2,M2[j,M2Index])
+
+                operation = ((m[M1Index] ** 2) + (M2[j,M2Index] ** 2)) ** .5
+                windMatches = np.append(windMatches, operation)
+
+                i += 10
+        
+        MaxIndex = np.argmax(windMatches) # index of max oper result gives the best window, which gives best peaks
+        if MaxPeak1[MaxIndex] > MaxPeak2[MaxIndex]:
+            MatchListMaxs = np.append(MatchListMaxs,MaxPeak1[MaxIndex])
+        else:
+            MatchListMaxs = np.append(MatchListMaxs,MaxPeak2[MaxIndex])
+        j += 1
+
+    return(np.max(MatchListMaxs))
