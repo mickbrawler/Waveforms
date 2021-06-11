@@ -3,7 +3,7 @@ import numpy as np
 import pylab as pl
 from numba import jit
 
-@jit(nopython=True)
+#@jit(nopython=True)
 def match(data, template, dt):
         
     ii = 0
