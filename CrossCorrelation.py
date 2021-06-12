@@ -1,7 +1,7 @@
 import json
 import numpy as np
 import pylab as pl
-from numba import jit
+#from numba import jit
 
 #@jit(nopython=True)
 def match(data, template, dt):
@@ -12,7 +12,9 @@ def match(data, template, dt):
         
     while len(data[ii:]) >= len(template):
         time_slides.append(ii*dt)
+        
         M.append(np.sum((data[ii: len(template) + ii] * template) / (1 + ((data[ii:len(template) + ii] - template) ** 2))))
+        #M.append(np.sum(((data[ii: len(template) + ii] * template) / (1 + (((data[ii:len(template) + ii] - template) ** 2) / template)))))
         ii += 1
         
     M = np.array(M)
