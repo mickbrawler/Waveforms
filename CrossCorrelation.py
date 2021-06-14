@@ -13,6 +13,7 @@ def match(data, template, dt):
     while len(data[ii:]) >= len(template):
         time_slides.append(ii*dt)
         
+        #M.append(np.sum((data[ii: len(template) + ii] * template)))
         M.append(np.sum((data[ii: len(template) + ii] * template) / (1 + ((data[ii:len(template) + ii] - template) ** 2))))
         #M.append(np.sum(((data[ii: len(template) + ii] * template) / (1 + (((data[ii:len(template) + ii] - template) ** 2) / template)))))
         ii += 1
@@ -22,6 +23,19 @@ def match(data, template, dt):
         
     return(time_slides, M)
 
+def ChiSquare(data, template, dt):
+
+    ii = 0
+    time_slides = []
+    C = []
+        
+    while len(data[ii:]) >= len(template):
+        time_slides.append(ii*dt)
+
+        C.append(np.sum((data[ii:len(template) + ii] - template) ** 2))
+        ii += 1
+        
+    return(time_slides, C)
 
 class Crosscor:
     def __init__(self, filename):
@@ -192,9 +206,8 @@ def search(f_low, f_hi, gamma_low, gamma_hi, datafile,
     Obj = Crosscor(datafile)
     for i in f:
         for j in g:
-            print("f = {}\t gamma = {}".format(i, j))
             Obj.template(i, j, tmplt_dur)
-            t, m = Obj.match()
+            t, m = match(Obj.d, Obj.y, Obj.dt)
             M = m[np.argmax(m)] # Max match
             T = t[np.argmax(m)] # Time associated with max match
             fs.append(i)
