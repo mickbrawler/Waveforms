@@ -195,7 +195,7 @@ def search(f_low, f_hi, gamma_low, gamma_hi, datafile,
         for j in g:
             print("f = {}\t gamma = {}".format(i, j))
             Obj.template(i, j, tmplt_dur)
-            t, m = Obj.match()
+            t, m = Obj.match(Obj.d, Obj.y, Obj.dt)
             M = m[np.argmax(m)] # Max match
             T = t[np.argmax(m)] # Time associated with max match
             fs.append(i)
