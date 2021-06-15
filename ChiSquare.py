@@ -218,7 +218,7 @@ def combine(file1, file2, file3, file4, file5, outputfile):
     return(globA, globF, globG, globT, globM)
 
 def searchChi(A_low, A_hi, f_low, f_hi, gamma_low, gamma_hi, datafile,
-              tmplt_dur, outputfile, df=1.0, dg=0.1, da=0.1): # Needs a touch
+              tmplt_dur, outputfile, df=1.0, dg=0.1, da=1.0): # Needs a touch
     """
     METHOD: Takes as input the upper and lower values of template amplitude,
     frequency and gammas, constructs a bank of templates using this range of 
@@ -239,6 +239,9 @@ def searchChi(A_low, A_hi, f_low, f_hi, gamma_low, gamma_hi, datafile,
     dg: Step-size in gamma (default = 0.1)
     da: Step-size in amplitude (default = 1.0)
     outputfile: The txt file with the two dimensional search results
+    
+    OUTPUT: Returns global maximum values for given ranges, and produces txt
+    value containing all of them
     """
 
     a = np.arange(A_low, A_hi+da, da)
@@ -247,6 +250,7 @@ def searchChi(A_low, A_hi, f_low, f_hi, gamma_low, gamma_hi, datafile,
 
     As = []
     fs = []
+
     gs = []
     Cs = []
     Ts = []
@@ -299,3 +303,53 @@ def plot(txtfile,plotfile):
     pl.xlabel("Frequency")
     pl.ylabel("Match")
     pl.savefig("figures/{}".format(plotfile))
+
+def combineChi(file1, outputfile):
+    
+    """
+    METHOD: Takes two json files (can be adjusted to accept more) and performs
+    the combined m operation to lower effect of noise. 
+
+    PARAMETERS:
+    -----------
+    file1: (json) First waveform json file
+    outputfile: (String) Name for txt file that will store data for analysis
+
+    OUTPUT: Outputs global maximum values of a single rho. No Quadrature
+    Sum involved
+    """
+
+    with open(file1, "r") as f:
+        data = json.load(f)
+    A = data["A"]
+    f1 = data["f"]
+    g = data["g"]
+    t = data["t"]
+    m1 = data["m"]
+    
+    m1 = np.array(m1)
+    t = np.array(t)
+
+    M = []
+    T = []
+    step = 0
+
+    for i in m1:
+        x = np.argmax(i)
+        T.append(t[step,x])
+        M.append(m1[step,x])
+        step += 1
+    
+    max_Match = np.argmax(np.array(M))
+
+    globA = A[max_Match]
+    globF = f1[max_Match]
+    globG = g[max_Match]
+    globT = T[max_Match]
+    globM = M[max_Match]
+
+    output = np.vstack((A,f1,g,T,M)).T
+    outputfile = "results/{}.txt".format(outputfile)
+    np.savetxt(outputfile, output, fmt="%f\t%f\t%f\t%f\t%f")
+
+    return(globA, globF, globG, globT, globM)
