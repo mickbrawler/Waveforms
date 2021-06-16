@@ -49,7 +49,7 @@ def match(data, template, dt):
         time_slides.append(ii*dt)
         
         #M.append(np.sum((data[ii: len(template) + ii] * template)))
-        M.append(np.sum((data[ii: len(template) + ii] * template) / (0.0000000001 + ((data[ii:len(template) + ii] - template) ** 2))))
+        M.append(np.sum((data[ii: len(template) + ii] * template) / (1 + ((data[ii:len(template) + ii] - template) ** 2))))
         ii += 1
         
     return(time_slides, M)
