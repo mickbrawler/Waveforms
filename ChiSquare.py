@@ -3,6 +3,7 @@ import numpy as np
 import pylab as pl
 #from numba import jit
 
+# Produces rho at each "slide"
 #@jit(nopython=True)
 def match(data, template, dt):
 
@@ -21,7 +22,7 @@ def match(data, template, dt):
 
     OUTPUT
     ======
-    Returns array of time slides and Cross-Correlation outputs from the 
+    Returns array of time slides and rho outputs from the 
     template.
     """
         
@@ -38,6 +39,7 @@ def match(data, template, dt):
         
     return(time_slides, M)
 
+# Produces chi square at each "slide"
 def ChiSquare(data, template, dt):
 
     """
@@ -84,7 +86,8 @@ class Crosscor:
         self.t = t
         w = 2 * np.pi * f
         self.y = A * np.sin(w*t)*np.exp(-gamma*t)
-    
+
+# Produces multiple templates and obtains rho returns for each of them
 #@jit(nopython=True)
 def matcharrays(A_low, A_hi, f_low, f_hi, gamma_low, gamma_hi, datafile,
                 tmplt_dur, matchfile, df=1.0, dg=0.1, da=1.0):
@@ -109,8 +112,8 @@ def matcharrays(A_low, A_hi, f_low, f_hi, gamma_low, gamma_hi, datafile,
     da: Step-size in amplitude (default = 1.0)
     matchfile: Name for json file with matches
     
-    OUTPUT:  Creates json file with amplitude in a list, frequency in a list, 
-    gamma in a list, time in a 2d list, and matches in a 2d list.
+    OUTPUT:  Creates json file with amplitude list, frequency list, 
+    gamma list, time 2d list, and matches 2d list.
     """
     
     a = np.arange(A_low, A_hi+da, da)
@@ -141,6 +144,7 @@ def matcharrays(A_low, A_hi, f_low, f_hi, gamma_low, gamma_hi, datafile,
     with open(outputfile, "w") as f:
         json.dump(data, f, indent=2, sort_keys=True)
 
+# Use after 5 matcharray() result jsons of different seeds
 def combine(file1, file2, file3, file4, file5, outputfile):
     
     """
@@ -157,7 +161,7 @@ def combine(file1, file2, file3, file4, file5, outputfile):
     outputfile: (String) Name for txt file that will store data for analysis
 
     OUTPUT: Creates txt file with lists of each run of frequency, gamma, time
-    slides, and matches. Return global maximum values
+    slides, and matches. Returns global maximum values.
     """
 
     with open(file1, "r") as f:
@@ -217,8 +221,143 @@ def combine(file1, file2, file3, file4, file5, outputfile):
 
     return(globA, globF, globG, globT, globM)
 
+
+# Produces multiple templates and obtains Chi returns for each of them
+def matcharraysChi(A_low, A_hi, f_low, f_hi, gamma_low, gamma_hi, datafile,
+                   tmplt_dur, matchfile, df=1.0, dg=0.1, da=1.0):
+    
+    """
+    METHOD: Takes as input the upper and lower values of template amplitude, 
+    frequency and gammas, constructs a bank of templates using this range of 
+    values, and then computes chi square for each
+
+    PARAMETERS:
+    -----------
+    A_low: Lower bound of the template amplitude
+    A_hi: Upper bound of the template amplitude
+    f_low: Lower bound of the frequency grid
+    f_hi: Upper bound of the frequency grid
+    gamma_low: Lower bound of the gamma grid
+    gamma_hi: Upper bound of the gamma grid
+    datafile: The JSON file with the data time series
+    tmplt_dur: The duration of the templates
+    df: Step-size in frequency (default = 1.0)
+    dg: Step-size in gamma (default = 0.1)
+    da: Step-size in amplitude (default = 1.0)
+    matchfile: Name for json file with matches
+    
+    OUTPUT:  Creates json file with amplitude list, frequency list, 
+    gamma list, time 2d list, and matches 2d list.
+    """
+    
+    a = np.arange(A_low, A_hi+da, da)
+    f = np.arange(f_low, f_hi+df, df)
+    g = np.arange(gamma_low, gamma_hi + dg, dg)
+
+    A = []
+    F = []
+    G = []
+    C = []
+    T = []
+
+    Obj = Crosscor(datafile)
+    for h in a:
+        for i in f:
+            for j in g:
+                Obj.template(h, i, j, tmplt_dur)
+                t, c = ChiSquare(Obj.d, Obj.y, Obj.dt)
+                T.append(t)
+                C.append(c)
+                A.append(h)
+                F.append(i)
+                G.append(j)
+
+    data = {"A" : A, "f" : F, "g" : G, "t" : T, "C" : C}
+    
+    outputfile = "results/{}.json".format(matchfile)
+    with open(outputfile, "w") as f:
+        json.dump(data, f, indent=2, sort_keys=True)
+
+# Use after 5 matcharraysChi() result jsons of different seeds
+def combineChi(file1, file2, file3, file4, file5, outputfile):
+    
+    """
+    METHOD: Takes two json files (can be adjusted to accept more) and performs
+    the combined m operation to lower effect of noise. 
+
+    PARAMETERS:
+    -----------
+    file1: (json) First waveform json file
+    file2: (json) Second waveform json file
+    file3: (json) Third waveform json file
+    file4: (json) Four waveform json file
+    file5: (json) Five waveform json file
+    outputfile: (String) Name for txt file that will store data for analysis
+
+    OUTPUT: Creates txt file with lists of each run of frequency, gamma, time
+    slides, and matches. Returns global maximum values.
+    """
+
+    with open(file1, "r") as f:
+        data = json.load(f)
+    A = data["A"]
+    f1 = data["f"]
+    g = data["g"]
+    t = data["t"]
+    C1 = data["C"]
+
+    with open(file2, "r") as f:
+        data = json.load(f)
+    C2 = data["C"]
+    
+    with open(file3, "r") as f:
+        data = json.load(f)
+    C3 = data["C"]
+    
+    with open(file4, "r") as f:
+        data = json.load(f)
+    C4 = data["C"]
+    
+    with open(file5, "r") as f:
+        data = json.load(f)
+    C5 = data["C"]
+
+    C1 = np.array(C1)
+    C2 = np.array(C2)
+    C3 = np.array(C3)
+    C4 = np.array(C4)
+    C5 = np.array(C5)
+    t = np.array(t)
+
+    combinedC = ((C1 ** 2) + (C2 ** 2) + (C3 ** 2) + (C4 ** 2) + (C5 ** 2)) ** .5
+   
+    C = []
+    T = []
+    step = 0
+
+    for i in combinedC:
+        x = np.argmin(i)
+        T.append(t[step,x])
+        C.append(combinedC[step,x])
+        step += 1
+    
+    min_Chi = np.argmin(np.array(C))
+
+    globA = A[min_Chi]
+    globF = f1[min_Chi]
+    globG = g[min_Chi]
+    globT = T[min_Chi]
+    globC = C[min_Chi]
+
+    output = np.vstack((A,f1,g,T,C)).T
+    outputfile = "results/{}.txt".format(outputfile)
+    np.savetxt(outputfile, output, fmt="%f\t%f\t%f\t%f\t%f")
+
+    return(globA, globF, globG, globT, globC)
+
+# Run based off of 1 waveform/detector (Soley Chi Square)
 def searchChi(A_low, A_hi, f_low, f_hi, gamma_low, gamma_hi, datafile,
-              tmplt_dur, outputfile, df=1.0, dg=0.1, da=1.0): # Needs a touch
+              tmplt_dur, outputfile, df=1.0, dg=0.1, da=1.0):
     """
     METHOD: Takes as input the upper and lower values of template amplitude,
     frequency and gammas, constructs a bank of templates using this range of 
@@ -261,8 +400,8 @@ def searchChi(A_low, A_hi, f_low, f_hi, gamma_low, gamma_hi, datafile,
             for j in g:
                 Obj.template(h, i, j, tmplt_dur)
                 t, c = ChiSquare(Obj.d, Obj.y, Obj.dt)
-                C = c[np.argmin(c)] # Max match
-                T = t[np.argmin(c)] # Time associated with max match
+                C = c[np.argmax(c)] # Max match
+                T = t[np.argmax(c)] # Time associated with max match
                 As.append(h)
                 fs.append(i)
                 gs.append(j)
@@ -273,7 +412,7 @@ def searchChi(A_low, A_hi, f_low, f_hi, gamma_low, gamma_hi, datafile,
     outputfile = "results/{}.txt".format(outputfile)
     np.savetxt(outputfile, output, fmt="%f\t%f\t%f\t%f\t%f")
 
-    max_index = np.argmin(Cs)
+    max_index = np.argmax(Cs)
     Mina = As[max_index]
     Minc = Cs[max_index]
     Mint = Ts[max_index]
@@ -282,9 +421,7 @@ def searchChi(A_low, A_hi, f_low, f_hi, gamma_low, gamma_hi, datafile,
 
     return(Mina, Minf, Ming, Mint, Minc)
 
-#search(90,105,0,1,"newdatafile.json"
-
-def plot(txtfile,plotfile):
+def plot(txtfile, plotfile):
     """
     METHOD: Takes as input the search function's outputfile, loads it, then
     isolates the frequency and match values to use as the x and y of the plot
@@ -304,11 +441,15 @@ def plot(txtfile,plotfile):
     pl.ylabel("Match")
     pl.savefig("figures/{}".format(plotfile))
 
-def combineChi(file1, outputfile):
+
+# Use after 1 matcharray() result json
+# Testing 1d A run for results based on rho
+def OneDetectorRho(file1, outputfile): 
     
     """
-    METHOD: Takes two json files (can be adjusted to accept more) and performs
-    the combined m operation to lower effect of noise. 
+    METHOD: Takes 1 json file of amplitude, frequency, gamma, and time values
+    for each rho result, and looks for the values associated with the
+    maximum rho result. (Testing 1 detector as control)
 
     PARAMETERS:
     -----------
@@ -316,7 +457,7 @@ def combineChi(file1, outputfile):
     outputfile: (String) Name for txt file that will store data for analysis
 
     OUTPUT: Outputs global maximum values of a single rho. No Quadrature
-    Sum involved
+    Sum involved.
     """
 
     with open(file1, "r") as f:
