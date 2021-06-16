@@ -3,6 +3,21 @@ import numpy as np
 import pylab as pl
 #from numba import jit
 
+class Crosscor:
+    def __init__(self, filename):
+        with open(filename, "r") as f:
+            data = json.load(f)
+        self.dt = data["dt"]
+        self.tfull = np.array(data["t_full"])
+        self.d = np.array(data["d"])
+
+    def template(self, A, f, gamma, duration):
+        
+        t = np.arange(0, duration + self.dt, self.dt)
+        self.t = t
+        w = 2 * np.pi * f
+        self.y = A * np.sin(w*t)*np.exp(-gamma*t)
+
 # Produces rho at each "slide"
 #@jit(nopython=True)
 def match(data, template, dt):
@@ -38,54 +53,6 @@ def match(data, template, dt):
         ii += 1
         
     return(time_slides, M)
-
-# Produces chi square at each "slide"
-def ChiSquare(data, template, dt):
-
-    """
-    METHOD
-    ======
-    Uses the data array, template array, and dt float. Solely performs Chi 
-    Square operation in each "slide".
-
-    PARAMETERS
-    ==========
-    data: (Array) Time series of the waveform with an embedded signal
-    template: (Array)  Time series of the template
-    dt: (Float) Resolution of time array of waveform
-
-    OUTPUT
-    ======
-    Returns array of time slides and Chi Square outputs from the 
-    template.
-    """
-
-    ii = 0
-    time_slides = []
-    C = []
-        
-    while len(data[ii:]) >= len(template):
-        time_slides.append(ii*dt)
-        
-        C.append(np.sum((data[ii: len(template) + ii] - template) ** 2))
-        ii += 1
-        
-    return(time_slides, C)
-
-class Crosscor:
-    def __init__(self, filename):
-        with open(filename, "r") as f:
-            data = json.load(f)
-        self.dt = data["dt"]
-        self.tfull = np.array(data["t_full"])
-        self.d = np.array(data["d"])
-
-    def template(self, A, f, gamma, duration):
-        
-        t = np.arange(0, duration + self.dt, self.dt)
-        self.t = t
-        w = 2 * np.pi * f
-        self.y = A * np.sin(w*t)*np.exp(-gamma*t)
 
 # Produces multiple templates and obtains rho returns for each of them
 #@jit(nopython=True)
@@ -221,6 +188,38 @@ def combine(file1, file2, file3, file4, file5, outputfile):
 
     return(globA, globF, globG, globT, globM)
 
+# Produces chi square at each "slide"
+def ChiSquare(data, template, dt):
+
+    """
+    METHOD
+    ======
+    Uses the data array, template array, and dt float. Solely performs Chi 
+    Square operation in each "slide".
+
+    PARAMETERS
+    ==========
+    data: (Array) Time series of the waveform with an embedded signal
+    template: (Array)  Time series of the template
+    dt: (Float) Resolution of time array of waveform
+
+    OUTPUT
+    ======
+    Returns array of time slides and Chi Square outputs from the 
+    template.
+    """
+
+    ii = 0
+    time_slides = []
+    C = []
+        
+    while len(data[ii:]) >= len(template):
+        time_slides.append(ii*dt)
+        
+        C.append(np.sum((data[ii: len(template) + ii] - template) ** 2))
+        ii += 1
+        
+    return(time_slides, C)
 
 # Produces multiple templates and obtains Chi returns for each of them
 def matcharraysChi(A_low, A_hi, f_low, f_hi, gamma_low, gamma_hi, datafile,
@@ -420,27 +419,6 @@ def searchChi(A_low, A_hi, f_low, f_hi, gamma_low, gamma_hi, datafile,
     Minf = fs[min_index]
 
     return(Mina, Minf, Ming, Mint, Minc)
-
-def plot(txtfile, plotfile):
-    """
-    METHOD: Takes as input the search function's outputfile, loads it, then
-    isolates the frequency and match values to use as the x and y of the plot
-    
-    PARAMETERS:
-    ----------
-    txtfile: (txt) File that holds frequency, gamma, time, and match values
-    plotfile: (png) Plot of the frequency and match values of provided file
-    """
-    results = np.loadtxt(txtfile)
-    f_array = results[:,0]
-    m_array = results[:,3]
-    pl.rcParams.update({'font.size':18})
-    pl.figure(figsize=(20,15))
-    pl.plot(f_array,m_array, linewidth=2)
-    pl.xlabel("Frequency")
-    pl.ylabel("Match")
-    pl.savefig("figures/{}".format(plotfile))
-
 
 # Use after 1 matcharray() result json
 # Testing 1d A run for results based on rho
