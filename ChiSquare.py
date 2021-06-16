@@ -49,7 +49,7 @@ def match(data, template, dt):
         time_slides.append(ii*dt)
         
         #M.append(np.sum((data[ii: len(template) + ii] * template)))
-        M.append(np.sum((data[ii: len(template) + ii] * template) / (1 + ((data[ii:len(template) + ii] - template) ** 2))))
+        M.append(np.sum((data[ii: len(template) + ii] * template) / (0.0000000001 + ((data[ii:len(template) + ii] - template) ** 2))))
         ii += 1
         
     return(time_slides, M)
@@ -353,6 +353,72 @@ def combineChi(file1, file2, file3, file4, file5, outputfile):
     np.savetxt(outputfile, output, fmt="%f\t%f\t%f\t%f\t%f")
 
     return(globA, globF, globG, globT, globC)
+
+
+def search(A_low, A_hi, f_low, f_hi, gamma_low, gamma_hi, datafile,
+           tmplt_dur, outputfile, df=1.0, dg=0.1, da=1.0):
+    """
+    METHOD: Takes as input the upper and lower values of template amplitude,
+    frequency and gammas, constructs a bank of templates using this range of 
+    values, and then computes the chisquare of each "slide". The minimum chi
+    square used to find the global maximum values.
+
+    PARAMETERS:
+    -----------
+    A_low: Lower bound of the template amplitude
+    A_hi: Upper bound of the template amplitude
+    f_low: Lower bound of the frequency grid
+    f_hi: Upper bound of the frequency grid
+    gamma_low: Lower bound of the gamma grid
+    gamma_hi: Upper bound of the gamma grid
+    datafile: The JSON file with the data time series
+    tmplt_dur: The duration of the templates
+    df: Step-size in frequency (default = 1.0)
+    dg: Step-size in gamma (default = 0.1)
+    da: Step-size in amplitude (default = 1.0)
+    outputfile: The txt file with the two dimensional search results
+    
+    OUTPUT: Returns global maximum values for given ranges, and produces txt
+    value containing all of them
+    """
+
+    a = np.arange(A_low, A_hi+da, da)
+    f = np.arange(f_low, f_hi+df, df)
+    g = np.arange(gamma_low, gamma_hi + dg, dg)
+
+    As = []
+    fs = []
+
+    gs = []
+    Ms = []
+    Ts = []
+
+    Obj = Crosscor(datafile)
+    for h in a:
+        for i in f:
+            for j in g:
+                Obj.template(h, i, j, tmplt_dur)
+                t, m = match(Obj.d, Obj.y, Obj.dt)
+                M = m[np.argmax(m)] # Max match
+                T = t[np.argmax(m)] # Time associated with max match
+                As.append(h)
+                fs.append(i)
+                gs.append(j)
+                Ts.append(T)
+                Ms.append(M)
+
+    output = np.vstack((As,fs,gs,Ts,Ms)).T
+    outputfile = "results/{}.txt".format(outputfile)
+    np.savetxt(outputfile, output, fmt="%f\t%f\t%f\t%f\t%f")
+
+    max_index = np.argmax(Ms)
+    Maxa = As[max_index]
+    Maxc = Ms[max_index]
+    Maxt = Ts[max_index]
+    Maxg = gs[max_index]
+    Maxf = fs[max_index]
+
+    return(Maxa, Maxf, Maxg, Maxt, Maxc)
 
 # Run based off of 1 waveform/detector (Soley Chi Square)
 def searchChi(A_low, A_hi, f_low, f_hi, gamma_low, gamma_hi, datafile,
