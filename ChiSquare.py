@@ -400,8 +400,8 @@ def searchChi(A_low, A_hi, f_low, f_hi, gamma_low, gamma_hi, datafile,
             for j in g:
                 Obj.template(h, i, j, tmplt_dur)
                 t, c = ChiSquare(Obj.d, Obj.y, Obj.dt)
-                C = c[np.argmax(c)] # Max match
-                T = t[np.argmax(c)] # Time associated with max match
+                C = c[np.argmin(c)] # Max match
+                T = t[np.argmin(c)] # Time associated with max match
                 As.append(h)
                 fs.append(i)
                 gs.append(j)
@@ -412,12 +412,12 @@ def searchChi(A_low, A_hi, f_low, f_hi, gamma_low, gamma_hi, datafile,
     outputfile = "results/{}.txt".format(outputfile)
     np.savetxt(outputfile, output, fmt="%f\t%f\t%f\t%f\t%f")
 
-    max_index = np.argmax(Cs)
-    Mina = As[max_index]
-    Minc = Cs[max_index]
-    Mint = Ts[max_index]
-    Ming = gs[max_index]
-    Minf = fs[max_index]
+    min_index = np.argmin(Cs)
+    Mina = As[min_index]
+    Minc = Cs[min_index]
+    Mint = Ts[min_index]
+    Ming = gs[min_index]
+    Minf = fs[min_index]
 
     return(Mina, Minf, Ming, Mint, Minc)
 
