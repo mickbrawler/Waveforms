@@ -441,14 +441,16 @@ class OnSource:
         plt.legend(loc=2)
         plt.show()
     
-    def ROC_Curve(self, n_s, T, N, outputfile="ROC_test"):
+    def ROC_Curve(self, n_s, T, N, new_stat_only=True, outputfile="ROC_test"):
         # DON'T RUN THIS WITHOUT ADJUSTing N, IT'S HIGH TO TEST MULTIPLE RHO'S
         # base statistics are CC_IJ,CS_IJ
         # Chi Square stat isn't working
         
-        # Any non-rho stats can be entered at the start
-        # stat_list = ["CC_IJ"]
-        stat_list = []
+        # Choose soley n-rho's or an addition stat
+        if new_stat_only == True:
+            stat_list = []
+        else:
+            stat_list = ["CC_IJ"]
 
         # different ^n rhos are appended
         for n in range(1,n_s+1):
