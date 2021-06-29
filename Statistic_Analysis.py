@@ -6,7 +6,6 @@ import math
 import time
 import operator
 
-
 def waveforms(N_A, N_g, N_f, t0_tf, T, B, trials, inputfile="input", phi0=0, A0=1, 
               Af=50, g0=0, gf=2, F0=90, Ff=110, N=1000):
     """
@@ -86,7 +85,7 @@ def waveforms(N_A, N_g, N_f, t0_tf, T, B, trials, inputfile="input", phi0=0, A0=
         waveform_data[j][0], waveform_data[j][1] = parameters, list(D_i)
     
     # each trial has list of parameters used and list of data values
-    with open("{}-waveform_data.json".format(inputfile) , "w") as f:
+    with open("Stats/waveform_data/{}-waveform_data.json".format(inputfile) , "w") as f:
         json.dump(waveform_data, f, indent=2, sort_keys=True)
 
 class OnSource:
@@ -152,7 +151,7 @@ class OnSource:
                        for g in self.G_RANGE for f in self.F_RANGE]
         
         # NEW ADDITION: Reads waveform data file 
-        with open("{}-waveform_data.json".format(inputfile),"r") as f: 
+        with open("Stats/waveform_data/{}-waveform_data.json".format(inputfile),"r") as f: 
             waveform_data = json.load(f)
         
         self.waveform_data = waveform_data
@@ -191,7 +190,7 @@ class OnSource:
         self.output = output
         
         # saves 'output' as a .json in current working directory.
-        '''with open("{}.json".format(outputfile), "w") as f:
+        '''with open("Stats/waveform_data/{}-stat_data.json".format(outputfile), "w") as f:
             json.dump(output, f, indent=2, sort_keys=True)'''
     
     # calculates test statistic, stores it internally, and returns a copy of it as a dictionary 
@@ -285,7 +284,7 @@ class OnSource:
 # test_plotter and scatter_plotter may be combinable by using arguments to trigger the creation of specific graphs
 # that is if we are always gonna be making these scatter plots
 
-    def test_plotter(self, T, N, new_stat_only=True, index=0):
+    def test_plotter(self, T, N, new_stat_only=True, index=0, output="test"):
         
         mapping = {}
         
@@ -374,6 +373,7 @@ class OnSource:
             plt.xlabel("$Threshold$")
             plt.ylabel("Counts")
             plt.show()
+            plt.savefig("Stats/stat_plots/{}_counts.png".format(outputfile))
 
             # Don't quite get this last part of test_plotter
             w = holder.sum(index)
@@ -382,12 +382,13 @@ class OnSource:
             z = [(i,j) for i in range(w.shape[0]) for j in range(w.shape[1])]
             for tup in z:
                 cop[tup] = int(w[tup])
-
+            
             plt.imshow(cop, cmap=plt.cm.hot) 
+            plt.savefig("Stats/stat_plots/{}_heat.png".format(outputfile))
 
 #             plt.imshow(heat_array, cmap=plt.cm.hot) 
     
-    def Scatter_plotter(self, thrshld, xvar, yvar): 
+    def Scatter_plotter(self, thrshld, xvar, yvar, outputfile="test"): 
     
         label = ["frequency", "amplitude", "gamma"]
         PSPACE_LEN = len(self.AGF_PAIR)
@@ -439,6 +440,7 @@ class OnSource:
         plt.xlabel(label[xvar])
         plt.ylabel(label[yvar])
         plt.legend(loc=2)
+        plt.savefig("Stats/stat_plots/{}_scatter.png".format(outputfile))
         plt.show()
     
     def ROC_Curve(self, n_s, T, N, new_stat_only=True, outputfile="ROC_test"):
@@ -476,7 +478,7 @@ class OnSource:
         plt.ylabel("Detection_Probs")
         plt.title("ROC Curve: n's={}: T={}: N={}".format(n_s,T,N))
         plt.legend()
-        plt.savefig("{}.png".format(outputfile))
+        plt.savefig("Stats/stat_plots/{}-ROC.png".format(outputfile))
         plt.show()
 
     # Produces a template given a position in parameter space
