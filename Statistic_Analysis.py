@@ -443,40 +443,38 @@ class OnSource:
         plt.savefig("Stats/stat_plots/{}_scatter.png".format(outputfile))
         plt.show()
     
-    def ROC_Curve(self, n_s, T, N, new_stat_only=True, outputfile="ROC_test"):
-        # DON'T RUN THIS WITHOUT ADJUSTing N, IT'S HIGH TO TEST MULTIPLE RHO'S
-        # base statistics are CC_IJ,CS_IJ
-        # Chi Square stat isn't working
+    def ROC_Curve(self, n_s, N, new_stat_only=True, outputfile="ROC_test"):
         
         # Choose soley n-rho's or an addition stat
         if new_stat_only == True:
             stat_list = []
         else:
             stat_list = ["CC_IJ"]
-
+            #stat_list = ["CC_IJ/((1+CS_IJ)**5)"]
+            
         # different ^n rhos are appended
         for n in range(1,n_s+1):
             rho = "CC_IJ/((1+CS_IJ)**{})".format(n)
             stat_list.append(rho)
         
         stat_length = len(stat_list)
-
-        New_False_Probs = []
-        Detection_Probs = []
-        
+        defaultT = .1
         # First graph shows the two ROC curves ontop each other
-        # Lists printed before are the False Alarm probability, and Detection Probabilities for each statistic
         for s in range(stat_length):
+            if stat_list[s] == "CC_IJ":
+                T = 10000 # 1000 too low
+            else:
+                T = defaultT
+                defaultT = defaultT * (10 ** -3.2)
+                
             self.rho(stat = stat_list[s])
             self.window(.02)
             self.test_plotter(T, N)
-            #print(x.New_False_Prob)
-            #print(x.Detection_Prob)
             plt.plot(self.New_False_Prob,self.Detection_Prob, label=stat_list[s])
             
         plt.xlabel("New_False_Probs")
         plt.ylabel("Detection_Probs")
-        plt.title("ROC Curve: n's={}: T={}: N={}".format(n_s,T,N))
+        plt.title("ROC Curve: n's={}: N={}".format(n_s,N))
         plt.legend()
         plt.savefig("Stats/stat_plots/{}-ROC.png".format(outputfile))
         plt.show()
