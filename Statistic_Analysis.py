@@ -6,7 +6,7 @@ import math
 import time
 import operator
 
-def waveforms(N_A, N_g, N_f, t0_tf, T, B, trials, inputfile="input", phi0=0, A0=1, 
+def waveforms(N_A, N_g, N_f, t0_tf, T, B, trials, seedn = 1, inputfile="input", phi0=0, A0=1, 
               Af=50, g0=0, gf=2, F0=90, Ff=110, N=1000):
     """
     METHOD
@@ -60,9 +60,6 @@ def waveforms(N_A, N_g, N_f, t0_tf, T, B, trials, inputfile="input", phi0=0, A0=
         
         dt=T/N # time resolution
 
-        #np.random.seed(seed = 1)
-        NOISE = -B+2*B*np.random.random(N)  # noise!
-
         t0=(T-t0_tf)*np.random.random(1)[0]  # randomly generate start time
         START_INDEX=math.floor(t0/dt)        # find index associated with time
 
@@ -77,12 +74,18 @@ def waveforms(N_A, N_g, N_f, t0_tf, T, B, trials, inputfile="input", phi0=0, A0=
         
         # replace timestamps with their displacement values
         SR = INJECTED[START_INDEX : START_INDEX+SIG_LEN][:]
-        INJECTED[START_INDEX : START_INDEX+SIG_LEN] = A*np.sin(w*SR + phi0)*np.exp(-gamma*( SR-t0))
-        D_i = NOISE + INJECTED  # complete data!
+        INJECTED[START_INDEX : START_INDEX+SIG_LEN] = A*np.sin(w*(SR) + phi0)*np.exp(-gamma*( SR-t0))
+        
+        # Purposed for Quadrature Sum
+        D_i = [] # list of each differently seeded waveform
+        for n in range(seedn):
+            np.random.seed(seed = n)
+            NOISE = -B+2*B*np.random.random(N)  # noise!
+            D_i.append(list(NOISE + INJECTED))  # complete data!
         
         # gets parameters and data for each trial, stuffs it into dictionary
         parameters = [A, f, gamma, t0]
-        waveform_data[j][0], waveform_data[j][1] = parameters, list(D_i)
+        waveform_data[j][0], waveform_data[j][1] = parameters, D_i
     
     # each trial has list of parameters used and list of data values
     with open("Stats/waveform_data/{}-waveform_data.json".format(inputfile) , "w") as f:
@@ -159,7 +162,7 @@ class OnSource:
         self.trials=trials
         output={}
             
-        for i in range(trials):            
+          for i in range(trials):            
             
             output.update({i:[[],[],[],[]]})
             
@@ -170,16 +173,27 @@ class OnSource:
             
             output[i][0], output[i][1] = temp_AGFT, data  # stores random a-g-f pair / data set 
             
-            CRS_COR, CHI_SQR = [[],[]]
-            
+            Quad_CRS = []
+            Quad_CHI = []
             # performs base static calculation across parameter space
-            for template in self.TEMPLATES_AGF:
-            
-                CC_dh = list(self.CrossCorrelation(data, template, self.dt))
-                CRS_COR.append(CC_dh)
-                                            
-                CS_dh = list(self.ChiSquare(data, template, self.dt))
-                CHI_SQR.append(CS_dh)
+            # Quadrature Sum
+            for n in range(seedn): # Use seedn as index for data
+                
+                CRS_COR, CHI_SQR = [[],[]]
+                
+                for template in self.TEMPLATES_AGF:
+
+                    CC_dh = list(self.CrossCorrelation(data[n], template, self.dt))
+                    CRS_COR.append(CC_dh)
+
+                    CS_dh = list(self.ChiSquare(data[n], template, self.dt))
+                    CHI_SQR.append(CS_dh)
+                
+                Quad_CRS.append(CRS_COR) # now a 3d list of seedn statistics, with 2d list statistics per waveform
+                Quad_CHI.append(CHI_SQR)
+                
+            CRS_COR = np.sum(np.array(Quad_CRS) ** 2, axis = 0) ** .5 # Quadrature sum of each seed's statistic
+            CHI_SQR = np.sum(np.array(Quad_CHI) ** 2, axis = 0) ** .5
             
             # stores base statistics to attribute
             self.cross_cor.append(CRS_COR)
