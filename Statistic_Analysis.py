@@ -449,8 +449,7 @@ class OnSource:
         if new_stat_only == True:
             stat_list = []
         else:
-            stat_list = ["CC_IJ"]
-            #stat_list = ["CC_IJ/((1+CS_IJ)**5)"]
+            stat_list = ["CC_IJ","CS_IJ"]
             
         # different ^n rhos are appended
         for n in range(1,n_s+1):
@@ -459,13 +458,15 @@ class OnSource:
         
         stat_length = len(stat_list)
         defaultT = .1
-        # First graph shows the two ROC curves ontop each other
         for s in range(stat_length):
             if stat_list[s] == "CC_IJ":
-                T = 10000 # 1000 too low
+                T = 1000 # CC_IJ 10000
+            elif stat_list[s] == "CS_IJ":
+                T = 100000
+
             else:
                 T = defaultT
-                defaultT = defaultT * (10 ** -3.2)
+                defaultT = defaultT * (10 ** -3)
                 
             self.rho(stat = stat_list[s])
             self.window(.02)
