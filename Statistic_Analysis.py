@@ -93,7 +93,7 @@ def waveforms(N_A, N_g, N_f, t0_tf, T, B, trials, seedn = 1, inputfile="input", 
 
 class OnSource:
     
-    def __init__(self, N_A, N_g, N_f, t0_tf, T, trials, inputfile="input", outputfile="output",
+    def __init__(self, N_A, N_g, N_f, t0_tf, T, trials, seedn = 1, inputfile="input", outputfile="output",
                  A0=1, Af=50, g0=0, gf=2, F0=90, Ff=110, N_t=1000):
 
         """
@@ -162,7 +162,7 @@ class OnSource:
         self.trials=trials
         output={}
             
-          for i in range(trials):            
+        for i in range(trials):            
             
             output.update({i:[[],[],[],[]]})
             
