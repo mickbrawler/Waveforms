@@ -223,7 +223,7 @@ def search(f_low, f_hi, gamma_low, gamma_hi, datafile,
     return(Maxf, Maxg, Maxt, Maxm)
 #search(90,105,0,1,"newdatafile.json"
 
-def heatmap(txtfile,plotfile):
+def heatmap(txtfile,plotfile,title):
     """
     METHOD: Takes as input a txt with all the frequency, gamma, time,
     and match results. This txt
@@ -246,6 +246,6 @@ def heatmap(txtfile,plotfile):
     pl.pcolormesh(F_GRID, G_GRID, match_grid.T, shading='auto')
     pl.xlabel('Frequency')
     pl.ylabel('$\\gamma$')
-    pl.title("Cross-Correlation: b = 0")
+    pl.title(title)
     pl.colorbar()
     pl.savefig("{}.png".format(plotfile))
