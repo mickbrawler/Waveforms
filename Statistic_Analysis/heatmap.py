@@ -4,8 +4,9 @@ from matplotlib import pyplot as plt
 %matplotlib inline
 import math
 import time
+import argparse
 
-def heatmap(var1, var2, T, max_OS=-1, max_BG=-1, stat=2, plot1="heat_plot1", plot2 = "heat_plot2"):
+def heatmap(var1, var2, T, stat=2, plot1="heat_plot1", plot2 = "heat_plot2", max_OS=-1, max_BG=-1):
 
     with open("run_uniques/essentials.json", "r") as f:
         essentials = json.load(f)
@@ -137,3 +138,18 @@ def heatmap(var1, var2, T, max_OS=-1, max_BG=-1, stat=2, plot1="heat_plot1", plo
     plt.title('Max Background; t='+str(T))
     plt.show()
     plt.savefig("plots/{}".format(plot2))
+
+# def heatmap(var1, var2, T, max_OS=-1, max_BG=-1, stat=2, plot1="heat_plot1", plot2 = "heat_plot2"):
+
+if __name__=="__main__":
+
+    parser = argparse.ArgumentParser()
+    parser.add_argument('--var1', type=int)
+    parser.add_argument('--var2', type=int)
+    parser.add_argument('--T', type=int)
+    parser.add_argument('--stat', nargs='?', const=1, type=int, default=2)
+    parser.add_argument('--plot1', nargs='?', const=1, type=str, default="heat_plot1")
+    parser.add_argument('--plot2', nargs='?', const=1, type=str, default="heat_plot2")
+    args = parser.parse_args() 
+
+    heatmap(args.var1,args.var2,args.T,args.stat,args.plot1,args.plot2)

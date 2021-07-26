@@ -4,6 +4,7 @@ from matplotlib import pyplot as plt
 %matplotlib inline
 import math
 import time
+import argparse
 
 def ROC_Data(T0, Tf, N, stat):
 
@@ -85,3 +86,13 @@ def ROC_Curve(N, outputfile="ROC_test"):
     plt.legend()
     plt.savefig("plots/{}.png".format(outputfile))
     plt.show()
+
+# def ROC_Curve(N, outputfile="ROC_test"):
+
+if __name__=="__main__":
+
+    parser = argparse.ArgumentParser()
+    parser.add_argument('--N', type=int)
+    args = parser.parse_args()
+
+    ROC_Curve(args.N)

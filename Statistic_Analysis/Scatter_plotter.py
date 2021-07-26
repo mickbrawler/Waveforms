@@ -4,6 +4,7 @@ from matplotlib import pyplot as plt
 %matplotlib inline
 import math
 import time
+import argparse
 
 def Scatter_plotter(thrshld, xvar, yvar, stat=2, plot="Scatter_plot"): 
 
@@ -76,3 +77,17 @@ def Scatter_plotter(thrshld, xvar, yvar, stat=2, plot="Scatter_plot"):
     plt.legend(loc=2)
     plt.show()
     plt.savefig("plots/{}".format(plot))
+
+# def Scatter_plotter(thrshld, xvar, yvar, stat=2, plot="Scatter_plot"): 
+
+if __name__=="__main__":
+    
+    parser = argparse.ArgumentParser()
+    parser.add_argument('--thrshld', type=int)
+    parser.add_argument('--xvar', type=int)
+    parser.add_argument('--yvar', type=int)
+    parser.add_argument('-stat-', nargs='?', const=1, type=int, default=2)
+    parser.add_argument('--plot', nargs='?', const=1, type=str, default="Scatter_plot")
+    args = parser.parse_args()
+
+    Scatter_plotter(args.thrshld,args.xvar,args.yvar,args.stat,args.plot)

@@ -4,8 +4,9 @@ from matplotlib import pyplot as plt
 %matplotlib inline
 import math
 import time
+import argparse
 
-def test_plotter(T, N, var1=0, var2=0,bg_test=True,stat=2,plot1="test_plot1",plot2="test_plot2"):
+def test_plotter(T, N, var1=0, var2=0, stat=2, bg_test=True, plot1="test_plot1", plot2="test_plot2"):
 
     with open("run_uniques/essentials.json", "r") as f:
         essentials = json.load(f)
@@ -135,3 +136,17 @@ def test_plotter(T, N, var1=0, var2=0,bg_test=True,stat=2,plot1="test_plot1",plo
     plt.savefig("plots/{}.png".format(plot2))
 
     #plt.imshow( heat_array, cmap=plt.cm.hot) 
+
+# def test_plotter(T, N, var1=0, var2=0,bg_test=True,stat=2,plot1="test_plot1",plot2="test_plot2"):
+
+if __name__=="__main__":
+
+    parser = argparse.ArgumentParser()
+    parser.add_argument('--T', type=int)
+    parser.add_argument('--N', type=int)
+    parser.add_argument('--var1', nargs='?', const=1, type=int, default=0)
+    parser.add_argument('--var2', nargs='?', const=1, type=int, default=0)
+    parser.add_argument('--stat', nargs='?', const=1, type=int, default=2)
+    args = parser.parse_args()
+
+    test_plotter(args.T,args.N,args.var1,args.var2,args.stat)

@@ -1,5 +1,6 @@
 import glob
 import json
+import argparse
 
 # works like a charm, put in your path and
 # make sure to include the path of the produced json in their merge name
@@ -26,3 +27,14 @@ def json_stack_keys(jsons_path, merge_path_name):
 
     with open('{}.json'.format(merge_path_name), 'w') as f:
         json.dump(C_dictionary, f, indent=2)
+
+#def json_stack_keys(jsons_path, merge_path_name):
+
+if __name__=="__main__":
+
+    parser = argparse.ArgumentParser()
+    parser.add_argument('--jsons_path', type=str)
+    parser.add_argument('--merge_path_name', type=str)
+    args = parser.parse_args()
+
+    json_stack_keys(args.jsons_path,args.merge_path_name)

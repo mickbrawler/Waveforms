@@ -4,6 +4,7 @@ from matplotlib import pyplot as plt
 %matplotlib inline
 import math
 import time
+import argparse
 
 # Produces a template given a position in parameter space
 def template(A, f, gamma, duration, dt):
@@ -47,9 +48,9 @@ def modulator(rho_ij, D, dt):
 
     return rho_mod_D
 
-def statudio(trialn, D, N_A, N_g, N_f, t0_tf, T, trials, run1 = True,
-                  seedn=1, inputfile="input", A0=1, Af=50, g0=0, gf=2,
-                  F0=90, Ff=110, N_t=10000):
+def statudio(trialn, D, N_A, N_g, N_f, t0_tf, T, trials, run1=True, seedn=1,
+             N_t=10000, inputfile="input", A0=1, Af=50, g0=0, gf=2, F0=90,
+             Ff=110):
 
     # initalizes the arrays which span parameter space, and their lengths
     A_RANGE=np.linspace(A0,Af,N_A)
@@ -228,3 +229,27 @@ def statudio(trialn, D, N_A, N_g, N_f, t0_tf, T, trials, run1 = True,
         essent = {"essentials":[A_LEN,F_LEN,G_LEN,list(F_RANGE),list(A_RANGE),list(G_RANGE),AFG_PAIR,trials,stats]}
         with open("run_uniques/essentials.json", "w") as f:
             json.dump(essent, f, indent=2, sort_keys=True)
+
+#def statudio(trialn, D, N_A, N_g, N_f, t0_tf, T, trials, run1 = True,
+#                  seedn=1, inputfile="input", A0=1, Af=50, g0=0, gf=2,
+#                  F0=90, Ff=110, N_t=10000):
+
+if __name__=="__main__":
+
+    parser = argparse.ArgumentParser()
+    parser.add_argument('--trialn', type=int)
+    parser.add_argument('--D', type=int)
+    parser.add_argument('--N_A', type=int)
+    parser.add_argument('--N_g', type=int)
+    parser.add_argument('--N_f', type=int)
+    parser.add_argument('--t0_tf', type=int)
+    parser.add_argument('--T', type=int)
+    parser.add_argument('--trials', type=int)
+    parser.add_argument('run1', nargs='?', const=1, type=bool, default=True)
+    parser.add_argument('seedn', nargs='?', const=1, type=int, default=1)
+    parser.add_argument('N_t', nargs='?', const=1, type=int, default=10000)
+
+    args = parser.parse_args()
+
+    statudio(args.trialn,args.D,args.N_A,args.N_g,args.N_f,args.t0_tf,args.T,args.trials,args.run1,args.seedn,args.N_t)
+

@@ -1,5 +1,6 @@
 import glob
 import json
+import argparse
 
 # This function will be run on the jsons of pot_threshold
 # pot_thresholds is a 2d list, where each list is a stat's onsource peaks for a trial
@@ -25,3 +26,14 @@ def json_list_append(jsons_path, merge_path_name):
 
     with open('{}.json'.format(merge_path_name), 'w') as f:
         json.dump(C_dictionary, f, indent=2)
+
+# def json_list_append(jsons_path, merge_path_name):
+
+if __name__=="__main__":
+
+    parser = argparse.ArgumentParser()
+    parser.add_argument('--jsons_path', type=str)
+    parser.add_argument('--merge_path_name', type=str)
+    args = parser.parse_args()
+
+    json_list_append(args.jsons_path,args.merge_path_name)
