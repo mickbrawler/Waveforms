@@ -1,20 +1,38 @@
 #!/bin/bash
 
+# Clear the (per trialn) jsons ahead of time
+
+rm -rf "Max_BG_TEMP_folder/*"
+rm -rf "output_folder/*"
+rm -rf "Peaks_folder/*"
+rm -rf "Max_OS_folder/*"
+rm -rf "thresholds_folder/*"
+
+rm -rf "Merged_jsons/*"
+
 # First generate waveform data of n trials (No ampersand)
 python3 Waveform_Generator.py --N_A 4 --N_g 4 --N_f 4 --t0_tf 4 --T 10 --B 0 --trials 10 --seedn 1 --N 250 --inputfile "input"
 
+count=0
 for i in {0..9};
 do
-	python3 statudio.py --trialn $i --D .02 --N_A 4 --N_g 4 --N_f 4 --t0_tf 4 --T 10 --trials 10 --run1 True --seedn 1 --N_t 250 --inputfile "input" &
+	if [ $count -eq 0 ]
+	then
+		count=$((count+1))
+		python3 statudio.py --trialn $i --D .02 --N_A 4 --N_g 4 --N_f 4 --t0_tf 4 --T 10 --trials 10 --run1 True --seedn 1 --N_t 250 --inputfile "input" &
+	else
+		python3 statudio.py --trialn $i --D .02 --N_A 4 --N_g 4 --N_f 4 --t0_tf 4 --T 10 --trials 10 --run1 False --seedn 1 --N_t 250 --inputfile "input" &
+	fi
+done
 
 # Wait for a empty directory to fill up before merging its jsons
-python3 monitor.py --directory "MAX_BG_TEMP_folder/" --dir_length 10
+python3 monitor.py --directory "Max_BG_TEMP_folder/" --dir_length 10
 
 python3 json_stack_keys.py --json_path "output_folder/" --merge_path_name "Merged_jsons/Merged_output" &
 python3 json_stack_keys.py --json_path "Peaks_folder/" --merge_path_name "Merged_jsons/Merged_Peaks" &
 python3 json_stack_keys.py --json_path "Max_OS_folder/" --merge_path_name "Merged_jsons/Merged_Max_OS" &
 
-python3 json_update_components.py --json_path "MAX_BG_TEMP_folder/" --merge_path_name "Merged_jsons/Merged_MAX_BG_TEMP" &
+python3 json_update_components.py --json_path "Max_BG_TEMP_folder/" --merge_path_name "Merged_jsons/Merged_MAX_BG_TEMP" &
 
 python3 json_list_append.py --json_path "thresholds_folder/" --merge_path_name "Merged_jsons/Merged_MAX_BG_TEMP" &
 

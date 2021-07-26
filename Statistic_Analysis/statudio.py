@@ -1,7 +1,6 @@
 import json
 import numpy as np
 from matplotlib import pyplot as plt
-%matplotlib inline
 import math
 import time
 import argparse
@@ -238,7 +237,7 @@ if __name__=="__main__":
 
     parser = argparse.ArgumentParser()
     parser.add_argument('--trialn', type=int)
-    parser.add_argument('--D', type=int)
+    parser.add_argument('--D', type=float)
     parser.add_argument('--N_A', type=int)
     parser.add_argument('--N_g', type=int)
     parser.add_argument('--N_f', type=int)
