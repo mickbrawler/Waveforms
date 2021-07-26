@@ -93,6 +93,7 @@ if __name__=="__main__":
 
     parser = argparse.ArgumentParser()
     parser.add_argument('--N', type=int)
+    parser.add_argument('--outputfile', nargs='?', const=1, type=str, default="ROC_test")
     args = parser.parse_args()
 
-    ROC_Curve(args.N)
+    ROC_Curve(args.N,args.outputfile)

@@ -137,7 +137,7 @@ def test_plotter(T, N, var1=0, var2=0, stat=2, bg_test=True, plot1="test_plot1",
 
     #plt.imshow( heat_array, cmap=plt.cm.hot) 
 
-# def test_plotter(T, N, var1=0, var2=0,bg_test=True,stat=2,plot1="test_plot1",plot2="test_plot2"):
+#def test_plotter(T, N, var1=0, var2=0, stat=2, bg_test=True, plot1="test_plot1", plot2="test_plot2"):
 
 if __name__=="__main__":
 
@@ -147,6 +147,10 @@ if __name__=="__main__":
     parser.add_argument('--var1', nargs='?', const=1, type=int, default=0)
     parser.add_argument('--var2', nargs='?', const=1, type=int, default=0)
     parser.add_argument('--stat', nargs='?', const=1, type=int, default=2)
+    parser.add_argument('--bg_test', nargs='?', const=1, type=bool, default=True)
+    parser.add_argument('--plot1', nargs='?', const=1, type=str, default="test_plot1")
+    parser.add_argument('--plot2', nargs='?', const=1, type=str, default="test_plot2")
+
     args = parser.parse_args()
 
-    test_plotter(args.T,args.N,args.var1,args.var2,args.stat)
+    test_plotter(args.T,args.N,args.var1,args.var2,args.stat,args.bg_test,args.plot1,args.plot2)

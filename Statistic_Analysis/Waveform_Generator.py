@@ -60,7 +60,8 @@ def waveforms(N_A, N_g, N_f, t0_tf, T, B, trials, seedn=1, N=10000,
     with open("run_uniques/{}-waveform_data.json".format(inputfile) , "w") as f:
         json.dump(waveform_data, f, indent=2, sort_keys=True)
 
-# def waveforms(N_A, N_g, N_f, t0_tf, T, B, trials, seedn=1, inputfile="input", phi0=0, A0=1, Af=50, g0=0, gf=2, F0=90, Ff=110, N=10000):
+#def waveforms(N_A, N_g, N_f, t0_tf, T, B, trials, seedn=1, N=10000,
+#        inputfile="input", phi0=0, A0=1, Af=50, g0=0, gf=2, F0=90, Ff=110):
 
 if __name__=="__main__":
 
@@ -72,9 +73,10 @@ if __name__=="__main__":
     parser.add_argument('--T', type=int)
     parser.add_argument('--B', type=int)
     parser.add_argument('--trials', type=int)
-    parser.add_argument('seedn', nargs='?', const=1, type=int, default=1)
-    parser.add_argument('N', nargs='?', const=1, type=int, default=10000)
+    parser.add_argument('--seedn', nargs='?', const=1, type=int, default=1)
+    parser.add_argument('--N', nargs='?', const=1, type=int, default=10000)
+    parser.add_argument('--inputfile', nargs='?', const=1, type=str, default='input')
 
     args = parser.parse_args()
 
-    waveforms(args.N_A,args.N_g,args.N_f,args.t0_tf,args.T,args.B,args.trials,args.seedn,args.N)
+    waveforms(args.N_A,args.N_g,args.N_f,args.t0_tf,args.T,args.B,args.trials,args.seedn,args.N,args.inputfile)
