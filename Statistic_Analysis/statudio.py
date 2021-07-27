@@ -252,4 +252,3 @@ if __name__=="__main__":
     args = parser.parse_args()
 
     statudio(args.trialn,args.D,args.N_A,args.N_g,args.N_f,args.t0_tf,args.T,args.trials,args.run1,args.seedn,args.N_t,args.inputfile)
-

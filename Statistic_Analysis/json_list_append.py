@@ -7,7 +7,7 @@ import argparse
 # The lists will have each trials values added to them until we havethe onsource peaks for all trials 
 
 def json_list_append(jsons_path, merge_path_name):
-
+    print("entering list_append")
     # Include last / at end of path!
     files = glob.glob("{}*.json".format(jsons_path))
 
@@ -26,6 +26,7 @@ def json_list_append(jsons_path, merge_path_name):
 
     with open('{}.json'.format(merge_path_name), 'w') as f:
         json.dump(C_dictionary, f, indent=2)
+    print("leaving list_append")
 
 # def json_list_append(jsons_path, merge_path_name):
 

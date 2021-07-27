@@ -8,7 +8,7 @@ import argparse
 # We therefore have the crosses across all trials
 
 def json_update_components(jsons_path, merge_path_name):
-    
+    print("inside components")    
     with open("Merged_jsons/Merged_Peaks.json", "r") as f:
         RHO_MOD = json.load(f)
     
@@ -48,6 +48,7 @@ def json_update_components(jsons_path, merge_path_name):
 
     with open('{}.json'.format(merge_path_name), 'w') as f:
         json.dump(C_dictionary, f, indent=2)
+    print("leaving components")
 
 # def json_update_components(jsons_path, merge_path_name):
 

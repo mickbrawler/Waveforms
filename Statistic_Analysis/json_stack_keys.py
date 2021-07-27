@@ -11,7 +11,7 @@ import argparse
 # trials is made
 
 def json_stack_keys(jsons_path, merge_path_name):
-    
+    print("in stack_keys.py")
     # Include last / at end of path!
     files = glob.glob("{}*.json".format(jsons_path))
 
@@ -27,7 +27,8 @@ def json_stack_keys(jsons_path, merge_path_name):
 
     with open('{}.json'.format(merge_path_name), 'w') as f:
         json.dump(C_dictionary, f, indent=2)
-
+    
+    print("leaving stack_key")
 #def json_stack_keys(jsons_path, merge_path_name):
 
 if __name__=="__main__":

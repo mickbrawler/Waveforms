@@ -5,6 +5,33 @@ import math
 import time
 import argparse
 
+def index_counter(var1,var2):
+    
+    # Calculates the index of the attribute variable
+    # (A, F, or G) which the heat map should marginaliz 
+    # over
+    if ((var1 <= 2) and (var2 <= 2)):    #checks if range valid
+        if ((0<= var1) and (0<= var2)):  #checks if range valid
+            if (var2 < var1):            #properly orders
+                var1, var2 = var2, var1
+                index=(1/4)*(var1-1)*(var1-2)*(var2)*(7-3*var2) #maps to needed index
+
+            elif (var2==var1):
+                index=var2  # if the values are the same, set as index
+
+            else:
+                index=(1/4)*(var1-1)*(var1-2)*(var2)*(7-3*var2) #maps to needed index
+
+        else:
+            print("improper index inputs: both must be >= 0")
+            index=0
+    else:
+        print("improper index inputs: both must be <= 2")
+        index=0
+
+    return index
+
+
 def heatmap(var1, var2, T, stat=2, plot1="heat_plot1", plot2 = "heat_plot2", max_OS=-1, max_BG=-1):
 
     with open("run_uniques/essentials.json", "r") as f:
@@ -119,7 +146,7 @@ def heatmap(var1, var2, T, stat=2, plot1="heat_plot1", plot2 = "heat_plot2", max
     plt.ylabel(label[IL[0]])
     plt.title('Max On Source; t='+str(T))
     plt.show()
-    plt.savefig("plots/{}".format(plot1))
+    plt.savefig("plots/{}.png".format(plot1))
     
     if (max_BG==-1):
         vmax_val=BG_cop.max()
@@ -136,7 +163,7 @@ def heatmap(var1, var2, T, stat=2, plot1="heat_plot1", plot2 = "heat_plot2", max
     plt.ylabel(label[IL[0]])
     plt.title('Max Background; t='+str(T))
     plt.show()
-    plt.savefig("plots/{}".format(plot2))
+    plt.savefig("plots/{}.png".format(plot2))
 
 # def heatmap(var1, var2, T, max_OS=-1, max_BG=-1, stat=2, plot1="heat_plot1", plot2 = "heat_plot2"):
 
