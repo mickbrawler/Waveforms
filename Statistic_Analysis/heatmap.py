@@ -162,7 +162,6 @@ def heatmap(var1, var2, T, stat=2, plot1="heat_plot1", plot2 = "heat_plot2", max
     plt.xlabel(label[IL[1]])
     plt.ylabel(label[IL[0]])
     plt.title('Max Background; t='+str(T))
-    plt.show()
     plt.savefig("plots/{}.png".format(plot2))
 
 # def heatmap(var1, var2, T, max_OS=-1, max_BG=-1, stat=2, plot1="heat_plot1", plot2 = "heat_plot2"):

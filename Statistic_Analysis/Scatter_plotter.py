@@ -74,7 +74,6 @@ def Scatter_plotter(thrshld, xvar, yvar, stat=2, plot="Scatter_plot"):
     plt.xlabel(label[xvar])
     plt.ylabel(label[yvar])
     plt.legend(loc=2)
-    plt.show()
     plt.savefig("plots/{}.png".format(plot))
 
 # def Scatter_plotter(thrshld, xvar, yvar, stat=2, plot="Scatter_plot"): 

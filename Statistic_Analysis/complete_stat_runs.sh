@@ -32,7 +32,7 @@ done
 echo "here"
 
 # Wait for a empty directory to fill up before merging its jsons
-python3 monitor.py --directory "Max_BG_TEMP_folder/" --dir_length 4
+python3 monitor.py --directory "thresholds_folder/" --dir_length 4
 
 echo "past monitor 1"
 

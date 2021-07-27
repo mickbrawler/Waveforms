@@ -105,7 +105,6 @@ def test_plotter(T, N, var1=0, var2=0, stat=2, bg_test=True, plot1="test_plot1",
     plt.plot(THRS_AXIS,COUNT_AXIS)
     plt.xlabel("$Threshold$")
     plt.ylabel("Counts")
-    plt.show()
     plt.savefig("plots/{}.png".format(plot1))
     plt.clf()
 

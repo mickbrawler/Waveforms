@@ -84,7 +84,6 @@ def ROC_Curve(N, outputfile="ROC_test"):
     plt.title("ROC Curve:N={}".format(N))
     plt.legend()
     plt.savefig("plots/{}.png".format(outputfile))
-    plt.show()
 
 # def ROC_Curve(N, outputfile="ROC_test"):
 
