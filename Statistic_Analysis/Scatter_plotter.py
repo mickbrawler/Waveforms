@@ -9,12 +9,6 @@ def Scatter_plotter(thrshld, xvar, yvar, stat=2, plot="Scatter_plot"):
 
     with open("run_uniques/essentials.json", "r") as f:
         essentials = json.load(f)
-    A_LEN = essentials["essentials"][0]
-    F_LEN = essentials["essentials"][1]
-    G_LEN = essentials["essentials"][2]
-    F_RANGE = essentials["essentials"][3]
-    A_RANGE = essentials["essentials"][4]
-    G_RANGE = essentials["essentials"][5]
     AFG_PAIR = essentials["essentials"][6]
     trials = essentials["essentials"][7]
 
@@ -24,7 +18,7 @@ def Scatter_plotter(thrshld, xvar, yvar, stat=2, plot="Scatter_plot"):
     with open("Merged_jsons/Merged_Peaks.json", "r") as f:
         RHO_MOD = json.load(f)
 
-    label=["amplitude","frequency", "gamma"]
+    label=["Frequency","Gamma","Amplitude"]
     PSPACE_LEN=len(AFG_PAIR)
     SUCC_PAIRS=([],[])
     FAIL_PAIRS=([],[])

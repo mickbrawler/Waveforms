@@ -43,7 +43,6 @@ def heatmap(var1, var2, T, stat=2, plot1="heat_plot1", plot2 = "heat_plot2", max
     A_RANGE = essentials["essentials"][4]
     G_RANGE = essentials["essentials"][5]
     AFG_PAIR = essentials["essentials"][6]
-    trials = essentials["essentials"][7]
 
     with open("Merged_jsons/Merged_output.json", "r") as f:
         output = json.load(f)
@@ -145,7 +144,6 @@ def heatmap(var1, var2, T, stat=2, plot1="heat_plot1", plot2 = "heat_plot2", max
     plt.xlabel(label[IL[1]])
     plt.ylabel(label[IL[0]])
     plt.title('Max On Source; t='+str(T))
-    plt.show()
     plt.savefig("plots/{}.png".format(plot1))
     
     if (max_BG==-1):
