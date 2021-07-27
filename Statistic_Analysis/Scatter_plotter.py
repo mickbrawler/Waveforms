@@ -17,8 +17,8 @@ def Scatter_plotter(thrshld, xvar, yvar, stat=2, plot="Scatter_plot"):
 
     with open("all_dir/Merged_jsons/Merged_Peaks.json", "r") as f:
         RHO_MOD = json.load(f)
-
-    label=["Frequency","Gamma","Amplitude"]
+    
+    label = ["amplitude","frequency", "gamma"]
     PSPACE_LEN=len(AFG_PAIR)
     SUCC_PAIRS=([],[])
     FAIL_PAIRS=([],[])
