@@ -7,7 +7,7 @@ import argparse
 
 def test_plotter(T, N, var1=0, var2=0, stat=2, bg_test=True, plot1="test_plot1", plot2="test_plot2"):
 
-    with open("run_uniques/essentials.json", "r") as f:
+    with open("all_dir/run_uniques/essentials.json", "r") as f:
         essentials = json.load(f)
     A_LEN = essentials["essentials"][0]
     F_LEN = essentials["essentials"][1]
@@ -18,10 +18,10 @@ def test_plotter(T, N, var1=0, var2=0, stat=2, bg_test=True, plot1="test_plot1",
     AFG_PAIR = essentials["essentials"][6]
     trials = essentials["essentials"][7]
 
-    with open("Merged_jsons/Merged_output.json", "r") as f:
+    with open("all_dir/Merged_jsons/Merged_output.json", "r") as f:
         output = json.load(f)
     
-    with open("Merged_jsons/Merged_Peaks.json", "r") as f:
+    with open("all_dir/Merged_jsons/Merged_Peaks.json", "r") as f:
         RHO_MOD = json.load(f)
 
     # Calculates the index of the attribute variable
@@ -105,7 +105,7 @@ def test_plotter(T, N, var1=0, var2=0, stat=2, bg_test=True, plot1="test_plot1",
     plt.plot(THRS_AXIS,COUNT_AXIS)
     plt.xlabel("$Threshold$")
     plt.ylabel("Counts")
-    plt.savefig("plots/{}.png".format(plot1))
+    plt.savefig("all_dir/plots/{}.png".format(plot1))
     plt.clf()
 
     #redefines things to be normal arrays inside
@@ -131,7 +131,7 @@ def test_plotter(T, N, var1=0, var2=0, stat=2, bg_test=True, plot1="test_plot1",
     plt.imshow( cop, cmap=plt.cm.hot)
     plt.xlabel(label[x[1]])
     plt.ylabel(label[x[0]])
-    plt.savefig("plots/{}.png".format(plot2))
+    plt.savefig("all_dir/plots/{}.png".format(plot2))
 
     #plt.imshow( heat_array, cmap=plt.cm.hot) 
 

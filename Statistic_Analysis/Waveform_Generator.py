@@ -57,7 +57,7 @@ def waveforms(N_A, N_g, N_f, t0_tf, T, B, trials, seedn=1, N=10000,
         waveform_data[j][0], waveform_data[j][1] = parameters, D_i
         
     # each trial has list of parameters used and list of data values
-    with open("run_uniques/{}-waveform_data.json".format(inputfile) , "w") as f:
+    with open("all_dir/run_uniques/{}-waveform_data.json".format(inputfile) , "w") as f:
         json.dump(waveform_data, f, indent=2, sort_keys=True)
 
 #def waveforms(N_A, N_g, N_f, t0_tf, T, B, trials, seedn=1, N=10000,

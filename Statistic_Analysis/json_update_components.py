@@ -9,7 +9,7 @@ import argparse
 
 def json_update_components(jsons_path, merge_path_name):
     print("inside components")    
-    with open("Merged_jsons/Merged_Peaks.json", "r") as f:
+    with open("all_dir/Merged_jsons/Merged_Peaks.json", "r") as f:
         RHO_MOD = json.load(f)
     
     # way of getting the first key of a dictionary, used to get tempn and statn quick and dirty

@@ -2,15 +2,15 @@
 
 # Clear the (per trialn) jsons ahead of time
 
-rm -rf Max_BG_TEMP_folder/*
-rm -rf output_folder/*
-rm -rf Peaks_folder/*
-rm -rf Max_OS_folder/*
-rm -rf thresholds_folder/*
+rm -rf all_dir/Max_BG_TEMP_folder/*
+rm -rf all_dir/output_folder/*
+rm -rf all_dir/Peaks_folder/*
+rm -rf all_dir/Max_OS_folder/*
+rm -rf all_dir/thresholds_folder/*
 
-rm -rf Merged_jsons/*
+rm -rf all_dir/Merged_jsons/*
 
-rm -rf plots/*
+rm -rf all_dir/plots/*
 
 echo "correct func"
 
@@ -32,28 +32,28 @@ done
 echo "here"
 
 # Wait for a empty directory to fill up before merging its jsons
-python3 monitor.py --directory "thresholds_folder/" --dir_length 4
+python3 monitor.py --directory "all_dir/thresholds_folder/" --dir_length 4
 
 echo "past monitor 1"
 
-python3 json_stack_keys.py --jsons_path "output_folder/" --merge_path_name "Merged_jsons/Merged_output" &
-python3 json_stack_keys.py --jsons_path "Peaks_folder/" --merge_path_name "Merged_jsons/Merged_Peaks" &
-python3 json_stack_keys.py --jsons_path "Max_OS_folder/" --merge_path_name "Merged_jsons/Merged_Max_OS" &
+python3 json_stack_keys.py --jsons_path "all_dir/output_folder/" --merge_path_name "all_dir/Merged_jsons/Merged_output" &
+python3 json_stack_keys.py --jsons_path "all_dir/Peaks_folder/" --merge_path_name "all_dir/Merged_jsons/Merged_Peaks" &
+python3 json_stack_keys.py --jsons_path "all_dir/Max_OS_folder/" --merge_path_name "all_dir/Merged_jsons/Merged_Max_OS" &
 
-python3 json_list_append.py --jsons_path "thresholds_folder/" --merge_path_name "Merged_jsons/Merged_thresholds" &
+python3 json_list_append.py --jsons_path "all_dir/thresholds_folder/" --merge_path_name "all_dir/Merged_jsons/Merged_thresholds" &
 
 
 echo "at monitor 2..."
 
 # Checks if all previous merges created
-python3 monitor.py --directory "Merged_jsons/" --dir_length 4
+python3 monitor.py --directory "all_dir/Merged_jsons/" --dir_length 4
 
-python3 json_update_components.py --jsons_path "Max_BG_TEMP_folder/" --merge_path_name "Merged_jsons/Merged_Max_BG_TEMP" &
+python3 json_update_components.py --jsons_path "all_dir/Max_BG_TEMP_folder/" --merge_path_name "all_dir/Merged_jsons/Merged_Max_BG_TEMP" &
 
 echo "at monitor 3..."
 
 # Wait for jsons to be merged before using them for the plots
-python3 monitor.py --directory "Merged_jsons/" --dir_length 5
+python3 monitor.py --directory "all_dir/Merged_jsons/" --dir_length 5
 
 echo "past monitor 3!!"
 

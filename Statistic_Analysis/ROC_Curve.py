@@ -7,12 +7,12 @@ import argparse
 
 def ROC_Data(T0, Tf, N, stat):
 
-    with open("run_uniques/essentials.json", "r") as f:
+    with open("all_dir/run_uniques/essentials.json", "r") as f:
         essentials = json.load(f)
     AFG_PAIR = essentials["essentials"][6]
     trials = essentials["essentials"][7]
     
-    with open("Merged_jsons/Merged_Peaks.json", "r") as f:
+    with open("all_dir/Merged_jsons/Merged_Peaks.json", "r") as f:
         RHO_MOD = json.load(f)
 
     PSPACE_LEN=len(AFG_PAIR)
@@ -56,12 +56,12 @@ def ROC_Data(T0, Tf, N, stat):
 
 def ROC_Curve(N, outputfile="ROC_test"):
     
-    with open("run_uniques/essentials.json", "r") as f:
+    with open("all_dir/run_uniques/essentials.json", "r") as f:
         essentials = json.load(f)
     stat_list = essentials["essentials"][8]
 
     
-    with open("Merged_jsons/Merged_thresholds.json", "r") as f:
+    with open("all_dir/Merged_jsons/Merged_thresholds.json", "r") as f:
         Thresholds = json.load(f)
     
     tempn = len(Thresholds)
@@ -77,7 +77,7 @@ def ROC_Curve(N, outputfile="ROC_test"):
     plt.ylabel("Detection_Probs")
     plt.title("ROC Curve:N={}".format(N))
     plt.legend()
-    plt.savefig("plots/{}.png".format(outputfile))
+    plt.savefig("all_dir/plots/{}.png".format(outputfile))
 
 # def ROC_Curve(N, outputfile="ROC_test"):
 

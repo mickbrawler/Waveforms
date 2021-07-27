@@ -7,15 +7,15 @@ import argparse
 
 def Scatter_plotter(thrshld, xvar, yvar, stat=2, plot="Scatter_plot"): 
 
-    with open("run_uniques/essentials.json", "r") as f:
+    with open("all_dir/run_uniques/essentials.json", "r") as f:
         essentials = json.load(f)
     AFG_PAIR = essentials["essentials"][6]
     trials = essentials["essentials"][7]
 
-    with open("Merged_jsons/Merged_output.json", "r") as f:
+    with open("all_dir/Merged_jsons/Merged_output.json", "r") as f:
         output = json.load(f)
 
-    with open("Merged_jsons/Merged_Peaks.json", "r") as f:
+    with open("all_dir/Merged_jsons/Merged_Peaks.json", "r") as f:
         RHO_MOD = json.load(f)
 
     label=["Frequency","Gamma","Amplitude"]
@@ -68,7 +68,7 @@ def Scatter_plotter(thrshld, xvar, yvar, stat=2, plot="Scatter_plot"):
     plt.xlabel(label[xvar])
     plt.ylabel(label[yvar])
     plt.legend(loc=2)
-    plt.savefig("plots/{}.png".format(plot))
+    plt.savefig("all_dir/plots/{}.png".format(plot))
 
 # def Scatter_plotter(thrshld, xvar, yvar, stat=2, plot="Scatter_plot"): 
 

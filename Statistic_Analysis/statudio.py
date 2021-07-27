@@ -76,7 +76,7 @@ def statudio(trialn, D, N_A, N_g, N_f, t0_tf, T, trials, run1=True, seedn=1,
                    for g in G_RANGE for f in F_RANGE]
 
     # Reads waveform data file 
-    with open("run_uniques/{}-waveform_data.json".format(inputfile),"r") as f: 
+    with open("all_dir/run_uniques/{}-waveform_data.json".format(inputfile),"r") as f: 
         waveform_data = json.load(f)
 
     waveform_data = waveform_data[str(trialn)] # trialn's parameters and differently seeded data
@@ -200,15 +200,15 @@ def statudio(trialn, D, N_A, N_g, N_f, t0_tf, T, trials, run1=True, seedn=1,
     # All jsons below will serve post processing
 
     # output holds trialn's parameters, data, cross-correlation, chi-square
-    with open("output_folder/output_{}.json".format(trialn), "w") as f: 
+    with open("all_dir/output_folder/output_{}.json".format(trialn), "w") as f: 
         json.dump(output, f, indent=2, sort_keys=True)
 
     # RHO_MOD holds trialn's background and forground values
-    with open("Peaks_folder/Peaks_{}.json".format(trialn), "w") as f:
+    with open("all_dir/Peaks_folder/Peaks_{}.json".format(trialn), "w") as f:
         json.dump(RHO_MOD, f, indent=2, sort_keys=True)
 
     # MAX_OS holds trialn's max onsource peak
-    with open("Max_OS_folder/Max_OS_{}.json".format(trialn), "w") as f:
+    with open("all_dir/Max_OS_folder/Max_OS_{}.json".format(trialn), "w") as f:
         json.dump(MAX_OS, f, indent=2, sort_keys=True)
     
     # MAX_BG_TEMP and pot_thresholds were devised wrong. They used to rewrite the same file with
@@ -216,17 +216,17 @@ def statudio(trialn, D, N_A, N_g, N_f, t0_tf, T, trials, run1=True, seedn=1,
     # faster than even the first. They are now made for each trial, but because of their different form
     # compared to the simple first three, weirder json combiners must be used on them
 
-    with open("Max_BG_TEMP_folder/Max_BG_TEMP{}.json".format(trialn), "w") as f: # Merged
+    with open("all_dir/Max_BG_TEMP_folder/Max_BG_TEMP{}.json".format(trialn), "w") as f: # Merged
         json.dump(MAX_BG_TEMP, f, indent=2, sort_keys=True)
         
-    with open("thresholds_folder/thresholds{}.json".format(trialn), "w") as f:
+    with open("all_dir/thresholds_folder/thresholds{}.json".format(trialn), "w") as f:
         json.dump(pot_thresholds, f, indent=2, sort_keys=True)
     
     # Now only the essentials file is made when run1 is True
     # essentials holds all the values that don't change for each trialn run
     if run1 == True:
         essent = {"essentials":[A_LEN,F_LEN,G_LEN,list(F_RANGE),list(A_RANGE),list(G_RANGE),AFG_PAIR,trials,stats]}
-        with open("run_uniques/essentials.json", "w") as f:
+        with open("all_dir/run_uniques/essentials.json", "w") as f:
             json.dump(essent, f, indent=2, sort_keys=True)
 
 #def statudio(trialn, D, N_A, N_g, N_f, t0_tf, T, trials, run1=True, seedn=1,

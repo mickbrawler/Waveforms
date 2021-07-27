@@ -34,7 +34,7 @@ def index_counter(var1,var2):
 
 def heatmap(var1, var2, T, stat=2, plot1="heat_plot1", plot2 = "heat_plot2", max_OS=-1, max_BG=-1):
 
-    with open("run_uniques/essentials.json", "r") as f:
+    with open("all_dir/run_uniques/essentials.json", "r") as f:
         essentials = json.load(f)
     A_LEN = essentials["essentials"][0]
     F_LEN = essentials["essentials"][1]
@@ -44,13 +44,13 @@ def heatmap(var1, var2, T, stat=2, plot1="heat_plot1", plot2 = "heat_plot2", max
     G_RANGE = essentials["essentials"][5]
     AFG_PAIR = essentials["essentials"][6]
 
-    with open("Merged_jsons/Merged_output.json", "r") as f:
+    with open("all_dir/Merged_jsons/Merged_output.json", "r") as f:
         output = json.load(f)
     
-    with open("Merged_jsons/Merged_Max_OS.json", "r") as f:
+    with open("all_dir/Merged_jsons/Merged_Max_OS.json", "r") as f:
         MAX_OS = json.load(f)
 
-    with open("Merged_jsons/Merged_Max_BG_TEMP.json", "r") as f:
+    with open("all_dir/Merged_jsons/Merged_Max_BG_TEMP.json", "r") as f:
         MAX_BG_TEMP = json.load(f)
     
     index=index_counter(var1,var2)
@@ -144,7 +144,7 @@ def heatmap(var1, var2, T, stat=2, plot1="heat_plot1", plot2 = "heat_plot2", max
     plt.xlabel(label[IL[1]])
     plt.ylabel(label[IL[0]])
     plt.title('Max On Source; t='+str(T))
-    plt.savefig("plots/{}.png".format(plot1))
+    plt.savefig("all_dir/plots/{}.png".format(plot1))
     
     if (max_BG==-1):
         vmax_val=BG_cop.max()
@@ -160,7 +160,7 @@ def heatmap(var1, var2, T, stat=2, plot1="heat_plot1", plot2 = "heat_plot2", max
     plt.xlabel(label[IL[1]])
     plt.ylabel(label[IL[0]])
     plt.title('Max Background; t='+str(T))
-    plt.savefig("plots/{}.png".format(plot2))
+    plt.savefig("all_dir/plots/{}.png".format(plot2))
 
 # def heatmap(var1, var2, T, max_OS=-1, max_BG=-1, stat=2, plot1="heat_plot1", plot2 = "heat_plot2"):
 
