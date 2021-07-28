@@ -61,9 +61,9 @@ python3 test_plotter.py --T 100 --N 300 --var1 0 --var2 0 --stat 2 --bg_test Tru
 
 python3 ROC_Curve.py --N 100 --outputfile "ROC_test" &
 
-python3 Scatter_plotter.py --thrshld 4 --xvar 2 --yvar 1 --stat 2 --plot "Scatter_Avg_plot" &
-python3 Scatter_plotter.py --thrshld 4 --xvar 2 --yvar 0 --stat 2 --plot "Scatter_AvF_plot" &
-python3 Scatter_plotter.py --thrshld 3 --xvar 1 --yvar 0 --stat 2 --plot "Scatter_FvG_plot" &
+python3 Scatter_plotter.py --thrshld 4 --xvar 2 --yvar 1 --stat 2 --plot "Scatter_GvF_plot" &
+python3 Scatter_plotter.py --thrshld 4 --xvar 2 --yvar 0 --stat 2 --plot "Scatter_GvA_plot" &
+python3 Scatter_plotter.py --thrshld 3 --xvar 1 --yvar 0 --stat 2 --plot "Scatter_FvA_plot" &
 
 python3 heatmap.py --var1 2 --var2 1 --T 0 --stat 2 --plot1 "heat_AvG_plot1" --plot2 "heat_AvG_plot2" &
 python3 heatmap.py --var1 2 --var2 0 --T 0 --stat 2 --plot1 "heat_AvF_plot1" --plot2 "heat_AvF_plot2" &
