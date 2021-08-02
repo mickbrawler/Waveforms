@@ -15,24 +15,24 @@ rm -rf all_dir/plots/*
 echo "correct func"
 
 # First generate waveform data of n trials (No ampersand)
-python3 Waveform_Generator.py --N_A 2 --N_g 2 --N_f 2 --t0_tf 4 --T 10 --B 0 --trials 4 --seedn 1 --N 250 --inputfile "input"
+python3 Waveform_Generator.py --N_A 4 --N_g 4 --N_f 4 --t0_tf 4 --T 10 --B 0 --trials 20 --seedn 1 --N 10000 --inputfile "input"
 
 count=0
-for i in {0..3};
+for i in {0..19};
 do
 	if [ $count -eq 0 ]
 	then
 		count=$((count+1))
-		python3 statudio.py --trialn $i --D .02 --N_A 2 --N_g 2 --N_f 2 --t0_tf 4 --T 10 --trials 4 --run1 True --seedn 1 --N_t 250 --inputfile "input" &
+		python3 statudio.py --trialn $i --D .3 --N_A 4 --N_g 4 --N_f 4 --t0_tf 4 --T 10 --trials 20 --run1 True --seedn 1 --N_t 10000 --inputfile "input" &
 	else
-		python3 statudio.py --trialn $i --D .02 --N_A 2 --N_g 2 --N_f 2 --t0_tf 4 --T 10 --trials 4 --run1 False --seedn 1 --N_t 250 --inputfile "input" &
+		python3 statudio.py --trialn $i --D .3 --N_A 4 --N_g 4 --N_f 4 --t0_tf 4 --T 10 --trials 20 --run1 False --seedn 1 --N_t 10000 --inputfile "input" &
 	fi
 done
 
 echo "here"
 
 # Wait for a empty directory to fill up before merging its jsons
-python3 monitor.py --directory "all_dir/thresholds_folder/" --dir_length 4
+python3 monitor.py --directory "all_dir/thresholds_folder/" --dir_length 20
 
 echo "past monitor 1"
 

@@ -51,6 +51,7 @@ def statudio(trialn, D, N_A, N_g, N_f, t0_tf, T, trials, run1=True, seedn=1,
              N_t=10000, inputfile="input", A0=1, Af=50, g0=0, gf=2, F0=90,
              Ff=110):
 
+    T = np.pi ** 2
     # initalizes the arrays which span parameter space, and their lengths
     A_RANGE=np.linspace(A0,Af,N_A)
     G_RANGE=np.linspace(g0,gf,N_g)
