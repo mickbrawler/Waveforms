@@ -1,25 +1,32 @@
 Goal of this project:
 =====================
 
-A waveform needs to be embedded on a noisy data. 
+To perform analysis on statistics capable of detecting signals embedded in 
+noise. 
 
 
 Method:
 =======
 
-The script should do the following:
+Current Progress:
 
-[*] A Python function should be there to generate a sinusoidal function given
-   a frequency, amplitude, start time, end time, attenuation function, and an
-   initial phase.
+[*] Simulated signal can be embedded in gaussian noise. Signal and noise
+	characteristics are up to the user's inputs in function arguments.
 
-[*] A Python function should be there that will generate a noisy data for given
-   duration. 
+[*] A match filter with multiple statistics can be performed on a waveform
+	with multiple templates. 
 
-[*] The second function should always create a data that has a duration longer 
-   than the duration of the wave.
+[*] Simulated detectors can be used as a method of zeroing out the noise
+	present in a waveform. With n detectors, n times as many match filters
+	must be done
 
-[*] Reproducibility: The noise instance must be seeded, so that the exact same
-   data (signal + noise) can be generated (if desired).
+[*] Multiple methods of testing a statistics ability to distinguish the 
+	presence and characteristics of a signal embedded in noise, given 
+	different parameter sizes are available.
 
+[*] (WIP) Use of Monte Carlo Markov Chains as a more efficient alternative 
+	to the full grid based search for a signal's parameters. 
+
+[*] (WIP) Use of bayesian statistics and kernel density estimation to produce
+	confidences for neutron star equation of state models.
 
