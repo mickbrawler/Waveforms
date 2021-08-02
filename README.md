@@ -1,14 +1,12 @@
-Goal of this project:
+Idea:
 =====================
 
 To perform analysis on statistics capable of detecting signals embedded in 
 noise. 
 
 
-Method:
+Progress:
 =======
-
-Current Progress:
 
 [*] Simulated signal can be embedded in gaussian noise. Signal and noise
 	characteristics are up to the user's inputs in function arguments.
