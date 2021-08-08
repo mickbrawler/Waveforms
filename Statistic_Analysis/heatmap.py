@@ -44,9 +44,6 @@ def heatmap(var1, var2, T, stat=2, plot1="heat_plot1", plot2 = "heat_plot2", max
     G_RANGE = essentials["essentials"][5]
     AFG_PAIR = essentials["essentials"][6]
 
-    with open("all_dir/Merged_jsons/Merged_output.json", "r") as f:
-        output = json.load(f)
-    
     with open("all_dir/Merged_jsons/Merged_Max_OS.json", "r") as f:
         MAX_OS = json.load(f)
 
