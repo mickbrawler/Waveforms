@@ -4,4 +4,3 @@ __pycache__
 .ipynb_checkpoints/
 /bigfiles
 results/TestingSpeed.json
-/Statistic_Analysis/all_dir/*
