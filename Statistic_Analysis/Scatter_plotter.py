@@ -6,18 +6,23 @@ import time
 import argparse
 
 def Scatter_plotter(thrshld, xvar, yvar, stat=2, plot="Scatter_plot"): 
-
+    
+    print("S:Reading essentials")
     with open("all_dir/run_uniques/essentials.json", "r") as f:
         essentials = json.load(f)
     AFG_PAIR = essentials["essentials"][6]
     trials = essentials["essentials"][7]
-
+    
+    print("S:Reading output")
     with open("all_dir/Merged_jsons/Merged_output.json", "r") as f:
         output = json.load(f)
 
+    print("S:Reading Peaks")
     with open("all_dir/Merged_jsons/Merged_Peaks.json", "r") as f:
         RHO_MOD = json.load(f)
     
+    print("S:Made it")
+
     label = ["amplitude","frequency", "gamma"]
     PSPACE_LEN=len(AFG_PAIR)
     SUCC_PAIRS=([],[])

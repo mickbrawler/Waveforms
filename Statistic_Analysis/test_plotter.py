@@ -7,6 +7,7 @@ import argparse
 
 def test_plotter(T, N, var1=0, var2=0, stat=2, bg_test=True, plot1="test_plot1", plot2="test_plot2"):
 
+    print("T:Reading uniques")
     with open("all_dir/run_uniques/essentials.json", "r") as f:
         essentials = json.load(f)
     A_LEN = essentials["essentials"][0]
@@ -18,11 +19,15 @@ def test_plotter(T, N, var1=0, var2=0, stat=2, bg_test=True, plot1="test_plot1",
     AFG_PAIR = essentials["essentials"][6]
     trials = essentials["essentials"][7]
 
+    print("T:Reading output")
     with open("all_dir/Merged_jsons/Merged_output.json", "r") as f:
         output = json.load(f)
     
+    print("T:Reading Peaks")
     with open("all_dir/Merged_jsons/Merged_Peaks.json", "r") as f:
         RHO_MOD = json.load(f)
+
+    print("T:Made it")
 
     # Calculates the index of the attribute variable
     # (A, F, or G) which the heat map should marginalize

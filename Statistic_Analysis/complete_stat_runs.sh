@@ -15,7 +15,7 @@ rm -rf all_dir/plots/*
 echo "correct func"
 
 # First generate waveform data of n trials (No ampersand)
-python3 Waveform_Generator.py --N_A 4 --N_g 4 --N_f 4 --t0_tf 4 --T 10 --B 0 --trials 20 --seedn 1 --N 10000 --inputfile "input"
+python3 Waveform_Generator.py --N_A 5 --N_g 5 --N_f 5 --t0_tf 4 --T 10 --B 0 --trials 20 --seedn 1 --N 10000 --inputfile "input"
 
 count=0
 for i in {0..19};
@@ -23,9 +23,9 @@ do
 	if [ $count -eq 0 ]
 	then
 		count=$((count+1))
-		python3 statudio.py --trialn $i --D .3 --N_A 4 --N_g 4 --N_f 4 --t0_tf 4 --T 10 --trials 20 --run1 True --seedn 1 --N_t 10000 --inputfile "input" &
+		python3 statudio.py --trialn $i --D .3 --N_A 5 --N_g 5 --N_f 5 --t0_tf 4 --T 10 --trials 20 --run1 True --seedn 1 --N_t 10000 --inputfile "input" &
 	else
-		python3 statudio.py --trialn $i --D .3 --N_A 4 --N_g 4 --N_f 4 --t0_tf 4 --T 10 --trials 20 --run1 False --seedn 1 --N_t 10000 --inputfile "input" &
+		python3 statudio.py --trialn $i --D .3 --N_A 5 --N_g 5 --N_f 5 --t0_tf 4 --T 10 --trials 20 --run1 False --seedn 1 --N_t 10000 --inputfile "input" &
 	fi
 done
 
