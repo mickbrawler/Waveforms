@@ -84,7 +84,8 @@ def statudio(trialn, D, N_A, N_g, N_f, t0_tf, T, trials, run1=True, seedn=1,
     
     output={}
 
-    output.update({trialn:[[],[],[],[]]})
+#    output.update({trialn:[[],[],[],[]]})
+    output.update({trialn:[[],[]]})
 
     # isolates random a-g-f pair / data set 
     temp_AGFT, data = waveform_data[0], waveform_data[1]
@@ -119,7 +120,7 @@ def statudio(trialn, D, N_A, N_g, N_f, t0_tf, T, trials, run1=True, seedn=1,
     # stores base statistics to attribute
     cross_cor = CRS_COR
     chi = CHI_SQR
-    output[trialn][2], output[trialn][3] = CRS_COR.tolist(), CHI_SQR.tolist() # store quadrature summed based statistics
+#    output[trialn][2], output[trialn][3] = CRS_COR.tolist(), CHI_SQR.tolist() # store quadrature summed based statistics
     
 #calculates test statistic, stores it internally,
 #and returns a copy of it as a dictionary 
